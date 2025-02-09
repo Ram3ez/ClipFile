@@ -12,6 +12,7 @@ dependencies:
   flutter:
     sdk: flutter
   google_fonts: ^6.2.1
+  image_picker: ^1.1.2
   liquid_pull_to_refresh: ^3.0.1
   msix: ^3.16.8
   provider: ^6.1.2
