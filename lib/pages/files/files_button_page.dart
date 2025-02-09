@@ -4,6 +4,7 @@ import "package:appwrite/appwrite.dart";
 import "package:file_picker/file_picker.dart";
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
+import "package:image_picker/image_picker.dart";
 import "package:provider/provider.dart";
 import "package:clipfile/components/custom_button.dart";
 import "package:clipfile/config.dart";
@@ -29,54 +30,107 @@ class _FilesButtonState extends State<FilesButton> {
   @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      mainAxisAlignment: Platform.isWindows
+          ? MainAxisAlignment.center
+          : MainAxisAlignment.spaceAround,
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
-        CustomButton(
-          onPress: () async {
-            HapticFeedback.heavyImpact();
-            FilePickerResult? result = await FilePicker.platform.pickFiles();
-            if (result != null) {
-              try {
-                if (context.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      duration: Durations.extralong4,
-                      content: Text("Uploading File"),
-                    ),
+        Platform.isWindows
+            ? SizedBox.shrink()
+            : CustomButton(
+                onPress: () async {
+                  final XFile? result = await ImagePicker().pickImage(
+                    source: ImageSource.camera,
                   );
-                }
-                await config.insertData(result.files.single.path!);
-                if (context.mounted) {
-                  final updater = context.read<FileProvider>();
-                  updater.update();
-                }
-              } on AppwriteException catch (e) {
-                if (context.mounted) {
-                  showDialog(
-                      context: context,
-                      barrierDismissible: false,
-                      builder: (context) {
-                        return AlertDialog(
-                          title: Text("Error Uploading File"),
-                          content: Text(e.message!),
-                          actions: [
-                            MaterialButton(
-                              child: Text("Ok"),
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                            )
-                          ],
+                  if (result != null) {
+                    try {
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            duration: Durations.extralong4,
+                            content: Text("Uploading Image"),
+                          ),
                         );
-                      });
-                }
-              }
-            }
-          },
-          buttonText: "Single-File",
-          long: false,
-        ),
+                      }
+
+                      await config.insertData(
+                          bytes: await result.readAsBytes(), name: result.name);
+                      if (context.mounted) {
+                        final updater = context.read<FileProvider>();
+                        updater.update();
+                      }
+                    } on AppwriteException catch (e) {
+                      if (context.mounted) {
+                        showDialog(
+                            context: context,
+                            barrierDismissible: false,
+                            builder: (context) {
+                              return AlertDialog(
+                                title: Text("Error Uploading Image"),
+                                content: Text(e.message!),
+                                actions: [
+                                  MaterialButton(
+                                    child: Text("Ok"),
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                  )
+                                ],
+                              );
+                            });
+                      }
+                    }
+                  }
+                },
+                onLongPress: () async {
+                  final List<XFile> result =
+                      await ImagePicker().pickMultipleMedia();
+                  if (result.runtimeType == List<XFile>) {
+                    try {
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            duration: Durations.extralong4,
+                            content: Text("Uploading Media"),
+                          ),
+                        );
+                      }
+
+                      for (var media in result) {
+                        await config.insertData(
+                            bytes: await media.readAsBytes(), name: media.name);
+                      }
+
+                      if (context.mounted) {
+                        final updater = context.read<FileProvider>();
+                        updater.update();
+                      }
+                    } on AppwriteException catch (e) {
+                      if (context.mounted) {
+                        showDialog(
+                            context: context,
+                            barrierDismissible: false,
+                            builder: (context) {
+                              return AlertDialog(
+                                title: Text("Error Uploading Image"),
+                                content: Text(e.message!),
+                                actions: [
+                                  MaterialButton(
+                                    child: Text("Ok"),
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                  )
+                                ],
+                              );
+                            });
+                      }
+                    }
+                  }
+                },
+                buttonText: "cam/library",
+                long: false,
+              ),
         CustomButton(
           onPress: () async {
             HapticFeedback.heavyImpact();
@@ -95,7 +149,7 @@ class _FilesButtonState extends State<FilesButton> {
                   );
                 }
                 for (var file in files) {
-                  await config.insertData(file.path);
+                  await config.insertData(path: file.path);
                 }
                 if (context.mounted) {
                   final updater = context.read<FileProvider>();
@@ -124,8 +178,8 @@ class _FilesButtonState extends State<FilesButton> {
               }
             }
           },
-          buttonText: "Multi-File",
-          long: false,
+          buttonText: "Choose file",
+          long: Platform.isWindows,
         ),
       ],
     );

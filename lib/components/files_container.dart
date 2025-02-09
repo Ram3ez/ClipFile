@@ -115,7 +115,7 @@ class FilesContainer extends StatelessWidget {
                                     onLongPress: () {
                                       HapticFeedback.heavyImpact();
                                       ImagePreview.imagePreview(
-                                          context, fileID);
+                                          context, fileID, fileName);
                                     },
                                     child: Container(
                                       padding: EdgeInsets.only(
@@ -123,10 +123,8 @@ class FilesContainer extends StatelessWidget {
                                           top: 10,
                                           bottom: 10,
                                           right: 10),
-                                      //margin: EdgeInsets.only(bottom: 25),
                                       decoration: BoxDecoration(
                                         color: Theme.of(context).primaryColor,
-                                        //borderRadius: BorderRadius.circular(15),
                                       ),
                                       height: 75,
                                       child: Row(
@@ -157,7 +155,7 @@ class FilesContainer extends StatelessWidget {
                                               child: Text(
                                                 fileName,
                                                 overflow: TextOverflow.ellipsis,
-                                                maxLines: 3,
+                                                maxLines: 2,
                                                 style: GoogleFonts.poppins(
                                                   fontSize: 16,
                                                 ),

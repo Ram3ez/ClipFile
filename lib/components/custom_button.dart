@@ -2,14 +2,17 @@ import "package:flutter/material.dart";
 import "package:google_fonts/google_fonts.dart";
 
 class CustomButton extends StatefulWidget {
-  CustomButton(
-      {super.key,
-      required this.onPress,
-      required this.buttonText,
-      required this.long,
-      this.short = false});
+  CustomButton({
+    super.key,
+    required this.onPress,
+    required this.buttonText,
+    required this.long,
+    this.short = false,
+    this.onLongPress,
+  });
 
   final void Function() onPress;
+  final void Function()? onLongPress;
   final String buttonText;
   final bool long;
   final bool short;
@@ -25,6 +28,7 @@ class _CustomButtonState extends State<CustomButton> {
     return GestureDetector(
       //borderRadius: BorderRadius.circular(25),
       onTap: widget.onPress,
+      onLongPress: widget.onLongPress,
       onTapDown: (details) {
         setState(() {
           widget.opacity = 0.4;

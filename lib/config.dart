@@ -71,12 +71,15 @@ class Config {
     return data.asStream();
   }
 
-  Future<File> insertData(String path) async {
+  Future<File> insertData(
+      {String? path, Uint8List? bytes, String? name}) async {
     try {
       var result = await storage.createFile(
           bucketId: bucketID,
           fileId: ID.unique(),
-          file: InputFile.fromPath(path: path));
+          file: path == null
+              ? InputFile.fromBytes(bytes: bytes!.toList(), filename: name!)
+              : InputFile.fromPath(path: path));
       return result;
     } on AppwriteException {
       rethrow;
