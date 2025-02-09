@@ -144,6 +144,7 @@ class _MainAppState extends State<MainApp> {
                       curve: Curves.easeIn);
                 },
                 effect: ExpandingDotsEffect(
+                  dotColor: Colors.white,
                   activeDotColor: Theme.of(context).secondaryHeaderColor,
                 ),
               ),
