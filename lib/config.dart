@@ -2,7 +2,7 @@ import 'package:appwrite/appwrite.dart';
 import 'package:appwrite/enums.dart';
 import 'package:appwrite/models.dart';
 import 'package:flutter/services.dart';
-import './Secrets.dart';
+import 'package:clipfile/secrets.dart';
 
 class Config {
   static var databaseID = Secrets.databaseID;
