@@ -2,13 +2,14 @@ import 'package:appwrite/appwrite.dart';
 import 'package:appwrite/enums.dart';
 import 'package:appwrite/models.dart';
 import 'package:flutter/services.dart';
+import './Secrets.dart';
 
 class Config {
-  static const databaseID = String.fromEnvironment("databaseID");
-  static const collectionID = String.fromEnvironment("collectionID");
-  static const projectID = String.fromEnvironment("projectID");
-  static const documentID = String.fromEnvironment("documentID");
-  static const bucketID = String.fromEnvironment("bucketID");
+  static var databaseID = Secrets.databaseID;
+  static var collectionID = Secrets.collectionID;
+  static var projectID = Secrets.projectID;
+  static var documentID = Secrets.documentID;
+  static var bucketID = Secrets.bucketID;
 
   static late Client client;
   static late Databases databases;

@@ -1,6 +1,6 @@
 name: clipfile
 description: "A new Flutter project."
-publish_to: 'none'
+publish_to: "none"
 version: 0.1.0
 
 environment:
@@ -13,6 +13,7 @@ dependencies:
     sdk: flutter
   google_fonts: ^6.2.1
   liquid_pull_to_refresh: ^3.0.1
+  msix: ^3.16.8
   provider: ^6.1.2
   quick_actions: ^1.1.0
   smooth_page_indicator: ^1.2.0+3
@@ -25,3 +26,8 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+
+msix_config:
+  display_name: "ClipFile"
+  custom_actions:
+    - name: "ClipFile"
