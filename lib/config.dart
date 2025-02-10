@@ -143,16 +143,6 @@ class Config {
                 onPressed: () {
                   Navigator.of(context).push(
                       MaterialPageRoute(builder: (context) => SettingsPage()));
-                  /* settingsBox.put("databaseID", "67a60bc1002f0f1f6ce8");
-                    settingsBox.put("projectID", "67a60a050000bc893984");
-                    settingsBox.put("documentID", "67a60cb600360cda06f2");
-                    settingsBox.put("collectionID", "67a60c07002df8f2e9d8");
-                    settingsBox.put("bucketID", "67a6e34a001ffa8c8949"); */
-                  /* settingsBox.put("databaseID", "");
-                    settingsBox.put("projectID", "");
-                    settingsBox.put("documentID", "");
-                    settingsBox.put("collectionID", "");
-                    settingsBox.put("bucketID", ""); */
                 },
                 child: Text(
                   "Settings",

@@ -3,9 +3,9 @@ import 'dart:io';
 import 'package:clipfile/components/custom_button.dart';
 import 'package:clipfile/components/custom_text_field.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:flutter_exit_app/flutter_exit_app.dart';
 import 'package:restart_app/restart_app.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -39,22 +39,38 @@ class _SettingsPageState extends State<SettingsPage> {
         color: Colors.black,
       ),
       actions: [
-        IconButton(
-            onPressed: () {
-              if (Platform.isAndroid || Platform.isIOS) {
-                //isUpdated ? FlutterExitApp.exitApp() : 1;
-                isUpdated
-                    ? Restart.restartApp(
-                        notificationTitle: "Restarted App",
-                        notificationBody: "Succesfully Updated Settings",
-                      )
-                    : 1;
-              }
-              ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
-            },
-            icon: isUpdated && (Platform.isIOS || Platform.isAndroid)
-                ? Icon(Icons.restart_alt_outlined)
-                : Icon(Icons.close)),
+        isUpdated
+            ? TextButton(
+                onPressed: () {
+                  if (Platform.isWindows) {
+                    exit(1);
+                  }
+
+                  if (Platform.isAndroid || Platform.isIOS) {
+                    //isUpdated ? FlutterExitApp.exitApp() : 1;
+                    isUpdated
+                        ? Restart.restartApp(
+                            notificationTitle: "Restarted App",
+                            notificationBody: "Succesfully Updated Settings",
+                          )
+                        : 1;
+                  }
+                  ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
+                },
+                child: Text(
+                  "Restart",
+                  style: GoogleFonts.poppins(
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).secondaryHeaderColor,
+                  ),
+                ))
+            : IconButton(
+                onPressed: () {
+                  ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
+                },
+                icon: isUpdated && (Platform.isIOS || Platform.isAndroid)
+                    ? Icon(Icons.restart_alt_outlined)
+                    : Icon(Icons.close)),
       ],
     );
   }
@@ -64,6 +80,7 @@ class _SettingsPageState extends State<SettingsPage> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
+        centerTitle: false,
         backgroundColor: Theme.of(context).secondaryHeaderColor,
         title: Text(
           "Settings",
@@ -217,14 +234,13 @@ class _SettingsPageState extends State<SettingsPage> {
                                 setState(() {});
                                 ScaffoldMessenger.of(context)
                                     .showMaterialBanner(
-                                  banner(
-                                      "Updated Settings. Please Restart The App!",
+                                  banner("Settings Updated Succesfully",
                                       isUpdated),
                                 );
                               } else {
                                 ScaffoldMessenger.of(context)
                                     .showMaterialBanner(
-                                  banner("No Values to Update", isUpdated),
+                                  banner("No Changes", isUpdated),
                                 );
                               }
                             }

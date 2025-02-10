@@ -3,7 +3,6 @@ import 'package:clipfile/pages/settings_page.dart';
 import 'package:clipfile/secrets.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:clipfile/providers/clip_data_provider.dart';
@@ -86,7 +85,6 @@ class _MainAppState extends State<MainApp> {
   void initHive() async {
     Box<String> settingsBox = Hive.box("settings");
     if (settingsBox.isEmpty) {
-      print("Empty");
       settingsBox.put("endpoint", Secrets.endpoint);
       settingsBox.put("projectID", Secrets.projectID);
       settingsBox.put("databaseID", Secrets.databaseID);
