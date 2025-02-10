@@ -28,30 +28,30 @@ ClipFile is built using Flutter and relies on the following key packages:
 You can use ClipFile with Appwrite's cloud services or self-host it via Docker.
 
 ### 📌 Using Appwrite Cloud
-1. Register for an account on [Appwrite Cloud](https://cloud.appwrite.io/). The free tier is sufficient for basic usage.
-2. Create a new project and assign it a preferred name.
-3. Select an available region to host the project.
-4. Add **Flutter** as a platform for the project.
-5. When prompted for a package name registration, select the platform(s) intended for use:
+- 1. Register for an account on [Appwrite Cloud](https://cloud.appwrite.io/). The free tier is sufficient for basic usage.
+- 2. Create a new project and assign it a preferred name.
+- 3. Select an available region to host the project.
+- 4. Add **Flutter** as a platform for the project.
+- 5. When prompted for a package name registration, select the platform(s) intended for use:
    - **Android/iOS**: Use `com.example.clipfile`.
    - **Windows**: Use `clipfile`.
-6. Assign any desired application name.
-7. Skip any optional setup steps.
-8. Navigate to the **Database** section and create a new database.
-9. Within the newly created database, establish a **Collection**.
-10. Add a **String Attribute** with a defined maximum size.
-11. Create a **Document** containing the specified attribute.
-12. Proceed to the **Storage** section and generate a **Bucket**.
-13. Access the bucket settings and grant permissions to the **Any** role, enabling the **Create, Read, Update, and Delete** options.
-14. Apply the same permission settings within **Databases → Collections → Documents**.
-15. Retrieve and store the following identifiers, as they will be required during the initial app setup:
+- 6. Assign any desired application name.
+- 7. Skip any optional setup steps.
+- 8. Navigate to the **Database** section and create a new database.
+- 9. Within the newly created database, establish a **Collection**.
+- 10. Add a **String Attribute** with a defined maximum size.
+- 11. Create a **Document** containing the specified attribute.
+- 12. Proceed to the **Storage** section and generate a **Bucket**.
+- 13. Access the bucket settings and grant permissions to the **Any** role, enabling the **Create, Read, Update, and Delete** options.
+- 14. Apply the same permission settings within **Databases → Collections → Documents**.
+- 15. Retrieve and store the following identifiers, as they will be required during the initial app setup:
     - **Project ID**
     - **Database ID**
     - **Collection ID**
     - **Attribute Name**
     - **Document ID**
     - **Bucket ID**
-16. If utilizing Appwrite Cloud, set the API endpoint to `https://cloud.appwrite.io/v1`.
+- 16. If utilizing Appwrite Cloud, set the API endpoint to `https://cloud.appwrite.io/v1`.
 
 ### 🏠 Self-Hosting with Appwrite
 Follow the official guide [here](https://appwrite.io/docs/advanced/self-hosting).
