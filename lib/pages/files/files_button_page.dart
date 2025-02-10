@@ -149,13 +149,18 @@ class _FilesButtonState extends State<FilesButton> {
                   );
                 }
                 for (var file in files) {
-                  await config.insertData(path: file.path);
+                  var bytes = await file.readAsBytes();
+                  var fileName = file.path.substring(
+                      file.path.lastIndexOf(Platform.pathSeparator) + 1);
+
+                  await config.insertData(bytes: bytes, name: fileName);
                 }
                 if (context.mounted) {
                   final updater = context.read<FileProvider>();
                   updater.update();
                 }
               } on AppwriteException catch (e) {
+                print(e);
                 if (context.mounted) {
                   showDialog(
                       context: context,
