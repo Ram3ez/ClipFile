@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:clipfile/config.dart';
 
 class FileProvider extends ChangeNotifier {
-  static late Future _fileList;
+  static late Future? _fileList;
 
-  Future get fileList => _fileList;
+  Future? get fileList => _fileList;
 
   FileProvider._();
 

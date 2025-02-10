@@ -1,4 +1,5 @@
 import 'package:clipfile/components/clipboard_container.dart';
+import 'package:clipfile/pages/settings_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -20,7 +21,7 @@ class _ClipboardPageState extends State<ClipboardPage> {
   @override
   void initState() {
     super.initState();
-    clipData = config.getData();
+    clipData = config.getData(context);
   }
 
   @override
@@ -40,6 +41,20 @@ class _ClipboardPageState extends State<ClipboardPage> {
             fontWeight: FontWeight.bold,
           ),
         ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: IconButton(
+              onPressed: () {
+                Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => SettingsPage()));
+              },
+              icon: Icon(Icons.settings_outlined),
+              iconSize: 25,
+              color: Colors.white,
+            ),
+          ),
+        ],
         centerTitle: false,
         backgroundColor: Theme.of(context).secondaryHeaderColor,
       ),

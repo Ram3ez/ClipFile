@@ -67,135 +67,132 @@ class FilesContainer extends StatelessWidget {
       child: AspectRatio(
         aspectRatio: 16 / 20,
         child: Container(
-            margin: EdgeInsets.all(20),
-            alignment: Alignment.topLeft,
-            decoration: BoxDecoration(
-              color: Theme.of(context).secondaryHeaderColor,
-              borderRadius: BorderRadius.circular(25),
-            ),
-            padding: EdgeInsets.all(23),
-            child: FutureBuilder(
-                future: future,
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    var files = snapshot.data as FileList;
-                    return LiquidPullToRefresh(
-                      showChildOpacityTransition: true,
-                      color: Theme.of(context).secondaryHeaderColor,
-                      onRefresh: () async {
-                        if (context.mounted) {
-                          final updater = context.read<FileProvider>();
-                          updater.update();
-                        }
-                      },
-                      child: ListView.builder(
-                        itemCount: files.total,
-                        itemBuilder: (context, index) {
-                          var [
-                            String fileName,
-                            double fileSize,
-                            String fileID,
-                            bool isKB,
-                            IconData icon,
-                          ] = init(files, index);
+          margin: EdgeInsets.all(20),
+          alignment: Alignment.topLeft,
+          decoration: BoxDecoration(
+            color: Theme.of(context).secondaryHeaderColor,
+            borderRadius: BorderRadius.circular(25),
+          ),
+          padding: EdgeInsets.all(23),
+          child: FutureBuilder(
+            future: future,
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                var files = snapshot.data as FileList;
+                return LiquidPullToRefresh(
+                  showChildOpacityTransition: true,
+                  color: Theme.of(context).secondaryHeaderColor,
+                  onRefresh: () async {
+                    if (context.mounted) {
+                      final updater = context.read<FileProvider>();
+                      updater.update();
+                    }
+                  },
+                  child: ListView.builder(
+                    itemCount: files.total,
+                    itemBuilder: (context, index) {
+                      var [
+                        String fileName,
+                        double fileSize,
+                        String fileID,
+                        bool isKB,
+                        IconData icon,
+                      ] = init(files, index);
 
-                          /* return Text(
+                      /* return Text(
                               "$fileName ${fileSize.toStringAsFixed(2)} ${isKB ? "KB" : "MB"}"); */
-                          return Column(
-                            children: [
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(15),
-                                clipBehavior: Clip.antiAlias,
-                                child: DismissTile(
-                                  onDelete: onDelete,
-                                  onDownload: onDownload,
-                                  fileID: fileID,
-                                  fileName: fileName,
-                                  child: InkWell(
-                                    onLongPress: () {
-                                      HapticFeedback.heavyImpact();
-                                      ImagePreview.imagePreview(
-                                          context, fileID, fileName);
-                                    },
-                                    child: Container(
-                                      padding: EdgeInsets.only(
-                                          left: 12,
-                                          top: 10,
-                                          bottom: 10,
-                                          right: 10),
-                                      decoration: BoxDecoration(
-                                        color: Theme.of(context).primaryColor,
-                                      ),
-                                      height: 75,
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Container(
-                                              padding: EdgeInsets.all(5),
-                                              decoration: BoxDecoration(
-                                                color: Colors.white,
-                                                borderRadius:
-                                                    BorderRadius.circular(100),
-                                                backgroundBlendMode:
-                                                    BlendMode.softLight,
-                                              ),
-                                              child: Icon(
-                                                icon,
-                                                color: Theme.of(context)
-                                                    .secondaryHeaderColor,
-                                              )),
-                                          SizedBox(
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
+                      return Column(
+                        children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(15),
+                            clipBehavior: Clip.antiAlias,
+                            child: DismissTile(
+                              onDelete: onDelete,
+                              onDownload: onDownload,
+                              fileID: fileID,
+                              fileName: fileName,
+                              child: InkWell(
+                                onLongPress: () {
+                                  HapticFeedback.heavyImpact();
+                                  ImagePreview.imagePreview(
+                                      context, fileID, fileName);
+                                },
+                                child: Container(
+                                  padding: EdgeInsets.only(
+                                      left: 12, top: 10, bottom: 10, right: 10),
+                                  decoration: BoxDecoration(
+                                    color: Theme.of(context).primaryColor,
+                                  ),
+                                  height: 75,
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Container(
+                                          padding: EdgeInsets.all(5),
+                                          decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius:
+                                                BorderRadius.circular(100),
+                                            backgroundBlendMode:
+                                                BlendMode.softLight,
+                                          ),
+                                          child: Icon(
+                                            icon,
+                                            color: Theme.of(context)
+                                                .secondaryHeaderColor,
+                                          )),
+                                      SizedBox(
+                                        width:
+                                            MediaQuery.of(context).size.width *
                                                 0.55,
-                                            height: 65,
-                                            child: Center(
-                                              child: Text(
-                                                fileName,
-                                                overflow: TextOverflow.ellipsis,
-                                                maxLines: 2,
-                                                style: GoogleFonts.poppins(
-                                                  fontSize: 16,
-                                                ),
-                                              ),
+                                        height: 65,
+                                        child: Center(
+                                          child: Text(
+                                            fileName,
+                                            overflow: TextOverflow.ellipsis,
+                                            maxLines: 2,
+                                            style: GoogleFonts.poppins(
+                                              fontSize: 16,
                                             ),
                                           ),
-                                          RotatedBox(
-                                            quarterTurns: 1,
-                                            child: Text(
-                                              "${isKB ? fileSize.toStringAsFixed(1) : fileSize.toStringAsFixed(2)} ${isKB ? "KB" : "MB"}",
-                                              style: GoogleFonts.poppins(
-                                                fontSize: 12,
-                                                color: Color.fromRGBO(
-                                                    0, 0, 0, 0.5),
-                                              ),
-                                            ),
-                                          ),
-                                        ],
+                                        ),
                                       ),
-                                    ),
+                                      RotatedBox(
+                                        quarterTurns: 1,
+                                        child: Text(
+                                          "${isKB ? fileSize.toStringAsFixed(1) : fileSize.toStringAsFixed(2)} ${isKB ? "KB" : "MB"}",
+                                          style: GoogleFonts.poppins(
+                                            fontSize: 12,
+                                            color: Color.fromRGBO(0, 0, 0, 0.5),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ),
-                              SizedBox(
-                                height: 25,
-                              ),
-                            ],
-                          );
-                        },
-                      ),
-                    );
-                  }
-                  return ConstrainedBox(
-                    constraints: BoxConstraints(),
-                    child: AspectRatio(
-                      aspectRatio: 16 / 20,
-                      child: Center(child: CircularProgressIndicator()),
-                    ),
-                  );
-                })),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 25,
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+                );
+              }
+              return ConstrainedBox(
+                constraints: BoxConstraints(),
+                child: AspectRatio(
+                  aspectRatio: 16 / 20,
+                  child: Center(child: CircularProgressIndicator()),
+                ),
+              );
+            },
+          ),
+        ),
       ),
     );
   }

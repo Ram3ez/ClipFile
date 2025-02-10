@@ -1,5 +1,6 @@
 import 'package:appwrite/appwrite.dart';
 import 'package:clipfile/components/files_container.dart';
+import 'package:clipfile/pages/settings_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -16,12 +17,12 @@ class FilesPage extends StatefulWidget {
 
 class _FilesPageState extends State<FilesPage> {
   final config = Config();
-  late Future fileList;
+  late Future? fileList;
 
   @override
   void initState() {
     super.initState();
-    fileList = config.listFiles();
+    fileList = config.listFiles(context);
   }
 
   void onDelete(String fileID) async {
@@ -77,6 +78,20 @@ class _FilesPageState extends State<FilesPage> {
             fontWeight: FontWeight.bold,
           ),
         ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: IconButton(
+              onPressed: () {
+                Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => SettingsPage()));
+              },
+              icon: Icon(Icons.settings_outlined),
+              iconSize: 25,
+              color: Colors.white,
+            ),
+          ),
+        ],
         centerTitle: false,
         backgroundColor: Theme.of(context).secondaryHeaderColor,
       ),
@@ -87,7 +102,7 @@ class _FilesPageState extends State<FilesPage> {
           ),
           Consumer<FileProvider>(
             builder: (context, state, child) => FilesContainer(
-              future: state.fileList,
+              future: state.fileList!,
               onDelete: onDelete,
               onDownload: onDownload,
             ),

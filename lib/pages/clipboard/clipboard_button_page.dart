@@ -19,7 +19,7 @@ class _ClipButtonState extends State<ClipButton> {
   @override
   void initState() {
     super.initState();
-    widget.clipData = Config().getData();
+    widget.clipData = Config().getData(context);
   }
 
   @override
@@ -31,7 +31,7 @@ class _ClipButtonState extends State<ClipButton> {
         CustomButton(
           onPress: () async {
             HapticFeedback.heavyImpact();
-            widget.clipData = Config().getData();
+            widget.clipData = Config().getData(context);
             var data = await widget.clipData;
             if (context.mounted) {
               final reader = context.read<ClipDataProvider>();

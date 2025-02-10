@@ -19,12 +19,12 @@ class FilesButton extends StatefulWidget {
 
 class _FilesButtonState extends State<FilesButton> {
   final config = Config();
-  late Future fileList;
+  late Future? fileList;
 
   @override
   void initState() {
     super.initState();
-    fileList = config.listFiles();
+    fileList = config.listFiles(context);
   }
 
   @override
@@ -85,7 +85,7 @@ class _FilesButtonState extends State<FilesButton> {
                 onLongPress: () async {
                   final List<XFile> result =
                       await ImagePicker().pickMultipleMedia();
-                  if (result.runtimeType == List<XFile>) {
+                  if (result.isNotEmpty) {
                     try {
                       if (context.mounted) {
                         ScaffoldMessenger.of(context).showSnackBar(

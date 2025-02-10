@@ -1,5 +1,10 @@
+import 'package:clipfile/config.dart';
+import 'package:clipfile/pages/settings_page.dart';
+import 'package:clipfile/secrets.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:clipfile/providers/clip_data_provider.dart';
 import 'package:clipfile/providers/file_provider.dart';
@@ -14,6 +19,8 @@ import 'package:window_manager/window_manager.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Hive.initFlutter();
+  Box<String> _ = await Hive.openBox("settings");
   if (Platform.isWindows) {
     await windowManager.ensureInitialized();
     await WindowManager.instance.setAlwaysOnTop(true);
@@ -28,8 +35,10 @@ void main() async {
 
   runApp(MaterialApp(
     debugShowCheckedModeBanner: false,
-    home: MainApp(),
+
+    home: MainApp(), //MainApp(),
     theme: ThemeData(
+      useMaterial3: true,
       primaryColor: Color.fromRGBO(142, 157, 169, 1),
       secondaryHeaderColor: Color.fromRGBO(54, 64, 79, 1),
     ),
@@ -74,9 +83,35 @@ class _MainAppState extends State<MainApp> {
     ],
   );
 
+  void initHive() async {
+    Box<String> settingsBox = Hive.box("settings");
+    if (settingsBox.isEmpty) {
+      print("Empty");
+      settingsBox.put("endpoint", Secrets.endpoint);
+      settingsBox.put("projectID", Secrets.projectID);
+      settingsBox.put("databaseID", Secrets.databaseID);
+      settingsBox.put("documentID", Secrets.documentID);
+      settingsBox.put("collectionID", Secrets.collectionID);
+      settingsBox.put("attributeName", Secrets.attributeName);
+      settingsBox.put("bucketID", Secrets.bucketID);
+    }
+  }
+
   @override
   void initState() {
     super.initState();
+    initHive();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (Config.bucketID == "" ||
+          Config.collectionID == "" ||
+          Config.documentID == "" ||
+          Config.databaseID == "" ||
+          Config.projectID == "" ||
+          Config.endpoint == "" ||
+          Config.attributeName == "") {
+        Config().serverSettingErrorDialog(context, "Please Set Server Details");
+      }
+    });
     if (Platform.isIOS || Platform.isAndroid) {
       final QuickActions quickActions = const QuickActions();
       quickActions.initialize((shortcutType) {
@@ -106,6 +141,8 @@ class _MainAppState extends State<MainApp> {
 
   @override
   Widget build(BuildContext context) {
+    //var settingsBox = Hive.box("settings");
+
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
       body: MultiProvider(
