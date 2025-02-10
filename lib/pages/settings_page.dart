@@ -46,7 +46,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 isUpdated
                     ? Restart.restartApp(
                         notificationTitle: "Restarted App",
-                        notificationBody: "Finished updating config",
+                        notificationBody: "Succesfully Updated Settings",
                       )
                     : 1;
               }

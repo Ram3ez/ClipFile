@@ -126,15 +126,16 @@ class _MainAppState extends State<MainApp> {
                 duration: Duration(milliseconds: 500), curve: Curves.easeIn);
             pageController2.animateToPage(1,
                 duration: Duration(milliseconds: 500), curve: Curves.easeIn);
+          } else if (shortcutType == "action_ter") {
+            Navigator.of(context)
+                .push(MaterialPageRoute(builder: (context) => SettingsPage()));
           }
         });
       });
       quickActions.setShortcutItems(<ShortcutItem>[
         const ShortcutItem(type: 'action_main', localizedTitle: 'ClipBoard'),
-        const ShortcutItem(
-          type: 'action_sec',
-          localizedTitle: 'Files',
-        )
+        const ShortcutItem(type: 'action_sec', localizedTitle: 'Files'),
+        const ShortcutItem(type: "action_ter", localizedTitle: "Settings"),
       ]);
     }
   }
