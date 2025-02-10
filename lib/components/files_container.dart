@@ -23,6 +23,7 @@ class FilesContainer extends StatelessWidget {
   List<dynamic> init(FileList fileList, int index) {
     String fileName = fileList.files[index].name;
     double fileSize = fileList.files[index].sizeOriginal / 1024;
+    bool isKB = fileSize < 1000;
     fileSize = fileSize > 1000 ? fileSize / 1024 : fileSize;
 
     IconData icon;
@@ -56,7 +57,7 @@ class FilesContainer extends StatelessWidget {
       fileName,
       fileSize,
       fileList.files[index].$id,
-      fileSize < 1000,
+      isKB,
       icon
     ];
   }
