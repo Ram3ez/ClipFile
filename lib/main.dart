@@ -20,6 +20,15 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
   Box<String> _ = await Hive.openBox("settings");
+  /* _.deleteAll([
+    "documentID",
+    "collectionID",
+    "projectID",
+    "bucketID",
+    "attributeName",
+    "endpoint",
+    "databaseID",
+  ]); */
   if (Platform.isWindows) {
     await windowManager.ensureInitialized();
     await WindowManager.instance.setAlwaysOnTop(true);
