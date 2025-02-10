@@ -39,19 +39,19 @@ You can use ClipFile with Appwrite's cloud services or self-host it via Docker.
 7. Skip any optional setup steps.
 8. Navigate to the **Database** section and create a new database.
 9. Within the newly created database, establish a **Collection**.
-0. Add a **String Attribute** with a defined maximum size.
-1.` Create a **Document** containing the specified attribute.
-2. Proceed to the **Storage** section and generate a **Bucket**.
-3. Access the bucket settings and grant permissions to the **Any** role, enabling the **Create, Read, Update, and Delete** options.
-4. Apply the same permission settings within **Databases → Collections → Documents**.
-5. Retrieve and store the following identifiers, as they will be required during the initial app setup:
+10. Add a **String Attribute** with a defined maximum size.
+11. Create a **Document** containing the specified attribute.
+12. Proceed to the **Storage** section and generate a **Bucket**.
+13. Access the bucket settings and grant permissions to the **Any** role, enabling the **Create, Read, Update, and Delete** options.
+14. Apply the same permission settings within **Databases → Collections → Documents**.
+15. Retrieve and store the following identifiers, as they will be required during the initial app setup:
     - **Project ID**
     - **Database ID**
     - **Collection ID**
     - **Attribute Name**
     - **Document ID**
     - **Bucket ID**
-6. If utilizing Appwrite Cloud, set the API endpoint to `https://cloud.appwrite.io/v1`.
+16. If utilizing Appwrite Cloud, set the API endpoint to `https://cloud.appwrite.io/v1`.
 
 ### 🏠 Self-Hosting with Appwrite
 Follow the official guide [here](https://appwrite.io/docs/advanced/self-hosting).
