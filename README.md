@@ -1,4 +1,4 @@
-# 📋 ClipFile
+# <img src="icon.png" width="48" align="center"> ClipFile 
 
 ## 🔥 Overview
 ClipFile is a cross-platform app that enables seamless clipboard synchronization and file sharing between devices. Built using Flutter, it supports Windows, Android, and iOS, making it easy to transfer text and files effortlessly.
@@ -21,8 +21,6 @@ ClipFile is built using Flutter and relies on the following key packages:
 - **[Quick Actions](https://pub.dev/packages/quick_actions)** - Home screen shortcuts for quick navigation.
 - **[Restart App](https://pub.dev/packages/restart_app)** - Restart the app programmatically when required.
 - **[Smooth Page Indicator](https://pub.dev/packages/smooth_page_indicator)** - Displays page indicators for navigation.
-
-
 
 ## 🏗️ Installation
 You can use ClipFile with Appwrite's cloud services or self-host it via Docker.
@@ -56,10 +54,9 @@ You can use ClipFile with Appwrite's cloud services or self-host it via Docker.
 ### 🏠 Self-Hosting with Appwrite
 Follow the official guide [here](https://appwrite.io/docs/advanced/self-hosting).
 
-
 ## 📖 Usage
 1. Install ClipFile on all your devices.
-2. Setup the app as specified above
+2. Setup the app as specified above.
 3. Start copying, pasting, and sharing files seamlessly!
 
 ## 🐛 Issues & Feedback
