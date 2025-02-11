@@ -58,18 +58,18 @@ class _ClipboardPageState extends State<ClipboardPage> {
         centerTitle: false,
         backgroundColor: Theme.of(context).secondaryHeaderColor,
       ),
-      body: Column(
+      body: /* Column(
         children: [
           SizedBox(
             height: 20,
-          ),
+          ), */
           Consumer<ClipDataProvider>(
-            builder: (context, state, child) => ClipboardContainer(
-              future: state.clipData,
-            ),
-          ),
-        ],
+        builder: (context, state, child) => ClipboardContainer(
+          future: state.clipData,
+        ),
       ),
+      //],
+      //),
     );
   }
 }

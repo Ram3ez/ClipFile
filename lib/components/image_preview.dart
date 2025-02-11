@@ -20,7 +20,7 @@ class ImagePreview {
                 padding: EdgeInsets.all(20),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  spacing: 20,
                   children: [
                     SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
@@ -39,8 +39,7 @@ class ImagePreview {
                           if (snapshot.hasData &&
                               snapshot.connectionState ==
                                   ConnectionState.done) {
-                            return AspectRatio(
-                              aspectRatio: 13 / 19,
+                            return Expanded(
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(5),
                                 clipBehavior: Clip.antiAlias,
@@ -51,8 +50,7 @@ class ImagePreview {
                               ),
                             );
                           } else {
-                            return AspectRatio(
-                              aspectRatio: 13 / 19,
+                            return Expanded(
                               child: Center(child: CircularProgressIndicator()),
                             );
                           }

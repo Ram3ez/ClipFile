@@ -33,9 +33,9 @@ void main() async {
   if (Platform.isWindows) {
     await windowManager.ensureInitialized();
     await WindowManager.instance.setAlwaysOnTop(true);
-    await WindowManager.instance.setSize(const Size(370, 730));
-    await WindowManager.instance.setMinimumSize(const Size(370, 730));
-    await WindowManager.instance.setMaximumSize(const Size(370, 730));
+    await WindowManager.instance.setSize(const Size(400, 730));
+    await WindowManager.instance.setMinimumSize(const Size(400, 730));
+    await WindowManager.instance.setMaximumSize(const Size(400, 730));
   }
 
   if (Platform.isAndroid || Platform.isIOS) {

@@ -35,6 +35,7 @@ flutter:
 
 msix_config:
   display_name: "ClipFile"
+  logo_path: "windows/runner/resources/app_icon.ico"
   custom_actions:
     - name: "ClipFile"
 
