@@ -119,10 +119,9 @@ class FilesContainer extends StatelessWidget {
                                 ),
                                 height: 75,
                                 child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
                                   children: [
                                     Container(
+                                        margin: EdgeInsets.all(8),
                                         padding: EdgeInsets.all(5),
                                         decoration: BoxDecoration(
                                           color: Colors.white,
@@ -143,7 +142,9 @@ class FilesContainer extends StatelessWidget {
                                       child: Align(
                                         alignment: Alignment.centerLeft,
                                         child: Text(
-                                          fileName,
+                                          fileName.length > 20
+                                              ? '${fileName.substring(0, 20)}...'
+                                              : fileName,
                                           overflow: TextOverflow.ellipsis,
                                           maxLines: 1,
                                           style: GoogleFonts.poppins(
@@ -152,6 +153,7 @@ class FilesContainer extends StatelessWidget {
                                         ),
                                       ),
                                     ),
+                                    Spacer(),
                                     RotatedBox(
                                       quarterTurns: 1,
                                       child: Text(

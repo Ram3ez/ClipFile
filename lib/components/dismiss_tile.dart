@@ -4,6 +4,7 @@ import 'dart:typed_data';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class DismissTile extends StatelessWidget {
   const DismissTile({
@@ -54,13 +55,50 @@ class DismissTile extends StatelessWidget {
       key: UniqueKey(),
       confirmDismiss: (direction) async {
         if (direction == DismissDirection.endToStart) {
-          return Future.value(true);
+          var delete = false;
+          await showDialog(
+              context: context,
+              builder: (context) {
+                return AlertDialog(
+                  title: Text(
+                    "Do you really want to delete this file?",
+                    style: GoogleFonts.poppins(),
+                  ),
+                  actions: [
+                    TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                          delete = true;
+                        },
+                        child: Text(
+                          "Yes",
+                          style: GoogleFonts.poppins(
+                            color: Theme.of(context).secondaryHeaderColor,
+                          ),
+                        )),
+                    TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                          delete = false;
+                        },
+                        child: Text(
+                          "No",
+                          style: GoogleFonts.poppins(
+                            color: Theme.of(context).secondaryHeaderColor,
+                          ),
+                        )),
+                  ],
+                );
+              });
+
+          return Future.value(delete);
         }
         if (direction == DismissDirection.startToEnd) {
           var fileStream = onDownload!(fileID, fileName);
           Uint8List fileData = Uint8List(0);
+          var download = false;
           await showDialog(
-              barrierDismissible: false,
+              barrierDismissible: true,
               context: context,
               builder: (context) {
                 return AlertDialog(
@@ -89,6 +127,7 @@ class DismissTile extends StatelessWidget {
                               child: Text("Save To Files"),
                               onPressed: () {
                                 Navigator.pop(context);
+                                download = true;
                               });
                         } else {
                           return Text("Download Failed");
@@ -96,22 +135,25 @@ class DismissTile extends StatelessWidget {
                       }),
                 );
               });
-          String? path = await FilePicker.platform.saveFile(
-            dialogTitle: "Choose An output",
-            fileName: fileName,
-            bytes: fileData,
-          );
 
-          try {
-            if (path != null) {
-              await File(path).writeAsBytes(fileData);
+          if (download) {
+            String? path = await FilePicker.platform.saveFile(
+              dialogTitle: "Choose An output",
+              fileName: fileName,
+              bytes: fileData,
+            );
+
+            try {
+              if (path != null) {
+                await File(path).writeAsBytes(fileData);
+              }
+            } catch (e) {
+              log(e.toString());
             }
-          } catch (e) {
-            log(e.toString());
+            return Future.value(false);
           }
-          return Future.value(false);
         }
-        return Future.value(true);
+        return Future.value(false);
       },
       onDismissed: (direction) async {
         if (direction == DismissDirection.endToStart) {

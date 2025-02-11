@@ -95,6 +95,8 @@ class _MainAppState extends State<MainApp> {
   void initHive() async {
     Box<String> settingsBox = Hive.box("settings");
     if (settingsBox.isEmpty) {
+      //settingsBox.put("onTop", "false");
+      //settingsBox.put("");
       settingsBox.put("endpoint", Secrets.endpoint);
       settingsBox.put("projectID", Secrets.projectID);
       settingsBox.put("databaseID", Secrets.databaseID);
