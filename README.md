@@ -1,6 +1,7 @@
-# 📋 ClipFile
+# <img src="icon.png" width="48" align="center"> ClipFile 
 
 ## 🔥 Overview
+
 ClipFile is a cross-platform app that enables seamless clipboard synchronization and file sharing between devices. Built using Flutter, it supports Windows, Android, and iOS, making it easy to transfer text and files effortlessly.
 
 ## 🚀 Features
@@ -21,8 +22,6 @@ ClipFile is built using Flutter and relies on the following key packages:
 - **[Quick Actions](https://pub.dev/packages/quick_actions)** - Home screen shortcuts for quick navigation.
 - **[Restart App](https://pub.dev/packages/restart_app)** - Restart the app programmatically when required.
 - **[Smooth Page Indicator](https://pub.dev/packages/smooth_page_indicator)** - Displays page indicators for navigation.
-
-
 
 ## 🏗️ Installation
 You can use ClipFile with Appwrite's cloud services or self-host it via Docker.
@@ -56,10 +55,32 @@ You can use ClipFile with Appwrite's cloud services or self-host it via Docker.
 ### 🏠 Self-Hosting with Appwrite
 Follow the official guide [here](https://appwrite.io/docs/advanced/self-hosting).
 
+### 💻 Installing ClipFile on Windows (.msix)
+If installing the app using the `.msix` package, follow these steps to trust the self-signed certificate and install the app:
+
+#### 1️⃣ Obtain and Install the Certificate
+1. Right-click on the `.appx` or `.msix` file.
+2. Click **Properties**.
+3. Go to the **Digital Signatures** tab.
+4. Select the signature from the list and click **Details**.
+5. Click **View Certificate**.
+6. Click **Install Certificate**.
+7. In the **Certificate Import Wizard**, select **Local Machine**.
+8. Click **Next** and confirm the UAC prompt.
+9. Select **Place all certificates in the following store**.
+10. Click **Browse**, scroll down, and select **Trusted People**.
+11. Click **OK**, then **Next**, and finally **Finish**.
+12. If a confirmation dialog appears, click **OK**.
+
+#### 2️⃣ Install the App Package
+1. Open the folder containing the `.msix` package.
+2. Double-click the package to begin the installation.
+3. Follow the on-screen instructions to complete the installation.
+4. Launch **ClipFile** and start using it!
 
 ## 📖 Usage
 1. Install ClipFile on all your devices.
-2. Setup the app as specified above
+2. Set up the app as specified above.
 3. Start copying, pasting, and sharing files seamlessly!
 
 ## 🐛 Issues & Feedback
@@ -67,3 +88,4 @@ Found a bug or have a feature request? Open an issue [here](https://github.com/R
 
 ---
 💙 Enjoy using ClipFile? Consider giving the repo a ⭐ to support development!
+
