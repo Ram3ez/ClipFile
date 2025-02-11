@@ -12,6 +12,8 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_exit_app: ^1.1.4
+  flutter_launcher_icons: ^0.14.3
+  flutter_native_splash: ^2.4.4
   google_fonts: ^6.2.1
   hive_flutter: ^1.1.0
   image_picker: ^1.1.2
@@ -35,3 +37,33 @@ msix_config:
   display_name: "ClipFile"
   custom_actions:
     - name: "ClipFile"
+
+flutter_native_splash:
+  android: true
+  ios: true
+  web: false
+
+  color: "#a1a9ac"
+  image: "assets/logo.png"
+
+  android_12:
+    color: "#a1a9ac"
+    image: "assets/android_logo.png"
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  #ios: true
+  #remove_alpha_ios: true
+  image_path: "assets/icon_2880.png"
+  min_sdk_android: 21 # android min sdk min:16, default 21
+  adaptive_icon_foreground: "assets/foreground.png"
+  adaptive_icon_background: "#ffffff"
+  #web:
+  #  generate: true
+  # image_path: "assets/icon_2880.png"
+  #  background_color: "#979fa2"
+  #  theme_color: "#979fa2"
+  #windows:
+  #  generate: true
+  #  image_path: "assets/icon_2880.png"
+  #  icon_size: 48 # min:48, max:256, default: 48

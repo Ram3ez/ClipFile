@@ -1,9 +1,7 @@
 import 'dart:io';
-
 import 'package:clipfile/components/custom_button.dart';
 import 'package:clipfile/components/custom_text_field.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:restart_app/restart_app.dart';
