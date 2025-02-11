@@ -48,22 +48,22 @@ flutter_native_splash:
 
   android_12:
     color: "#a1a9ac"
-    image: "assets/android_logo.png"
+    image: "assets/logo.png"
 
 flutter_launcher_icons:
-  android: "launcher_icon"
-  #ios: true
+  android: false
+  ios: false
   #remove_alpha_ios: true
   image_path: "assets/icon_2880.png"
-  min_sdk_android: 21 # android min sdk min:16, default 21
-  adaptive_icon_foreground: "assets/foreground.png"
-  adaptive_icon_background: "#ffffff"
+  #min_sdk_android: 21 # android min sdk min:16, default 21
+  #adaptive_icon_foreground: "assets/foreground.png"
+  #adaptive_icon_background: "#ffffff"
   #web:
   #  generate: true
   # image_path: "assets/icon_2880.png"
   #  background_color: "#979fa2"
   #  theme_color: "#979fa2"
-  #windows:
-  #  generate: true
-  #  image_path: "assets/icon_2880.png"
-  #  icon_size: 48 # min:48, max:256, default: 48
+  windows:
+    generate: true
+    image_path: "assets/icon_2880.png"
+    icon_size: 256 # min:48, max:256, default: 48
