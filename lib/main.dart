@@ -18,8 +18,8 @@ import 'dart:io';
 import 'package:window_manager/window_manager.dart';
 
 void main() async {
-  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
-  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+  WidgetsFlutterBinding.ensureInitialized();
+
   await Hive.initFlutter();
   Box<String> _ = await Hive.openBox("settings");
   /* _.deleteAll([
