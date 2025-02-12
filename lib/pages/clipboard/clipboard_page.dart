@@ -30,6 +30,7 @@ class _ClipboardPageState extends State<ClipboardPage> {
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
+
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
       appBar: AppBar(
@@ -42,6 +43,20 @@ class _ClipboardPageState extends State<ClipboardPage> {
           ),
         ),
         actions: [
+          IconButton(
+              onPressed: () async {
+                var data = await Config().getData(context);
+                setState(() {
+                  if (mounted) {
+                    final reader = context.read<ClipDataProvider>();
+                    reader.update(data);
+                  }
+                });
+              },
+              icon: Icon(
+                Icons.refresh_rounded,
+                color: Colors.white,
+              )),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: IconButton(

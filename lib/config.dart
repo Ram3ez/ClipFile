@@ -16,6 +16,8 @@ class Config {
   static var collectionID = settingsBox.get("collectionID") ?? "";
   static var attributeName = settingsBox.get("attributeName") ?? "";
   static var bucketID = settingsBox.get("bucketID") ?? "";
+  static var alwaysOnTop = settingsBox.get("onTop") ?? "true";
+  static var fixedSize = settingsBox.get("fixedSize") ?? "false";
 
   static late Client client;
   static late Databases databases;
@@ -27,6 +29,7 @@ class Config {
     Config.client = Client().setEndpoint(endpoint).setProject(projectID);
     Config.databases = Databases(client);
     Config.storage = Storage(client);
+
     return Config._();
   }
 
@@ -46,7 +49,7 @@ class Config {
       if (context!.mounted) {
         serverSettingErrorDialog(
           context,
-          "Error in Server Details",
+          "Please Set Server Details",
         );
       }
 
@@ -77,7 +80,7 @@ class Config {
       if (context!.mounted) {
         serverSettingErrorDialog(
           context,
-          "Error in Server Details",
+          "Please Set Server Details",
         );
       }
       return null;

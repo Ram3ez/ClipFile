@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:appwrite/appwrite.dart';
 import 'package:clipfile/components/files_container.dart';
 import 'package:clipfile/pages/settings_page.dart';
@@ -79,6 +81,22 @@ class _FilesPageState extends State<FilesPage> {
           ),
         ),
         actions: [
+          Platform.isWindows
+              ? IconButton(
+                  onPressed: () async {
+                    //var data = await Config().getData(context);
+                    setState(() {
+                      if (mounted) {
+                        final reader = context.read<FileProvider>();
+                        reader.update();
+                      }
+                    });
+                  },
+                  icon: Icon(
+                    Icons.refresh_rounded,
+                    color: Colors.white,
+                  ))
+              : SizedBox.shrink(),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: IconButton(

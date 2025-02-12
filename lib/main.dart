@@ -20,7 +20,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await Hive.initFlutter();
-  Box<String> _ = await Hive.openBox("settings");
+  Box<String> box = await Hive.openBox("settings");
   /* _.deleteAll([
     "documentID",
     "collectionID",
@@ -32,10 +32,17 @@ void main() async {
   ]); */
   if (Platform.isWindows) {
     await windowManager.ensureInitialized();
-    await WindowManager.instance.setAlwaysOnTop(true);
+    if (box.get("onTop") == "false") {
+      await WindowManager.instance.setAlwaysOnTop(false);
+    } else {
+      await WindowManager.instance.setAlwaysOnTop(true);
+    }
     await WindowManager.instance.setSize(const Size(400, 730));
-    await WindowManager.instance.setMinimumSize(const Size(400, 730));
-    await WindowManager.instance.setMaximumSize(const Size(400, 730));
+
+    if (box.get("fixedSize") == "true") {
+      await WindowManager.instance.setResizable(false);
+      await WindowManager.instance.setSize(const Size(400, 730));
+    }
   }
 
   if (Platform.isAndroid || Platform.isIOS) {
@@ -95,8 +102,9 @@ class _MainAppState extends State<MainApp> {
   void initHive() async {
     Box<String> settingsBox = Hive.box("settings");
     if (settingsBox.isEmpty) {
-      //settingsBox.put("onTop", "false");
       //settingsBox.put("");
+      settingsBox.put("onTop", "true");
+      settingsBox.put("fixedSize", "false");
       settingsBox.put("endpoint", Secrets.endpoint);
       settingsBox.put("projectID", Secrets.projectID);
       settingsBox.put("databaseID", Secrets.databaseID);
@@ -111,7 +119,7 @@ class _MainAppState extends State<MainApp> {
   void initState() {
     super.initState();
     initHive();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    /* WidgetsBinding.instance.addPostFrameCallback((_) {
       if (Config.bucketID == "" ||
           Config.collectionID == "" ||
           Config.documentID == "" ||
@@ -121,7 +129,7 @@ class _MainAppState extends State<MainApp> {
           Config.attributeName == "") {
         Config().serverSettingErrorDialog(context, "Please Set Server Details");
       }
-    });
+    }); */
     if (Platform.isIOS || Platform.isAndroid) {
       final QuickActions quickActions = const QuickActions();
       quickActions.initialize((shortcutType) {
