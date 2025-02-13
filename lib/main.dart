@@ -1,9 +1,12 @@
+import 'dart:async';
+
 import 'package:clipfile/pages/settings_page.dart';
 import 'package:clipfile/secrets.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:clipfile/providers/clip_data_provider.dart';
 import 'package:clipfile/providers/file_provider.dart';
@@ -70,6 +73,8 @@ class MainApp extends StatefulWidget {
 }
 
 class _MainAppState extends State<MainApp> {
+  late final StreamSubscription<InternetStatus> _subscription;
+  late final AppLifecycleListener _listener;
   static PageController pageController = PageController(
     initialPage: 0,
   );
@@ -152,10 +157,38 @@ class _MainAppState extends State<MainApp> {
     });
   }
 
+  bool disconnected = false;
+
   @override
   void initState() {
     super.initState();
     initHive();
+    _subscription = InternetConnection().onStatusChange.listen((status) {
+      if (status == InternetStatus.disconnected) {
+        disconnected = true;
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (context) {
+                return AlertDialog(
+                  title: Text("No Internet Connection"),
+                  content: Text("Please Connect to the internet"),
+                );
+              });
+        });
+      } else if (disconnected) {
+        disconnected = false;
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          Navigator.of(context).pop();
+        });
+      }
+    });
+    _listener = AppLifecycleListener(
+      onResume: _subscription.resume,
+      onPause: _subscription.pause,
+      onHide: _subscription.pause,
+    );
     _checkForUpdates();
     if (Platform.isIOS || Platform.isAndroid) {
       final QuickActions quickActions = const QuickActions();
@@ -183,6 +216,13 @@ class _MainAppState extends State<MainApp> {
         const ShortcutItem(type: "action_ter", localizedTitle: "Settings"),
       ]);
     }
+  }
+
+  @override
+  void dispose() {
+    _subscription.cancel();
+    _listener.dispose();
+    super.dispose();
   }
 
   @override

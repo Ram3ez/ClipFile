@@ -17,6 +17,7 @@ dependencies:
   google_fonts: ^6.2.1
   hive_flutter: ^1.1.0
   image_picker: ^1.1.2
+  internet_connection_checker_plus: ^2.7.0
   liquid_pull_refresh: ^1.0.6
   liquid_pull_to_refresh: ^3.0.1
   msix: ^3.16.8

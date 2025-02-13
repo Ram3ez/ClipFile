@@ -47,8 +47,10 @@ class Config {
           collectionId: collectionID,
           documentId: documentID);
       return result.data[attributeName] ?? "";
-    } catch (e) {
-      if (context!.mounted) {
+    } on AppwriteException catch (e) {
+      if (context!.mounted &&
+          !e.message!.contains(
+              "ClientException with SocketException: Failed host lookup")) {
         serverSettingErrorDialog(
           context,
           "Please Set Server Details",
@@ -78,8 +80,10 @@ class Config {
     try {
       await storage.listFiles(bucketId: bucketID);
       return storage.listFiles(bucketId: bucketID);
-    } catch (e) {
-      if (context!.mounted) {
+    } on AppwriteException catch (e) {
+      if (context!.mounted &&
+          !e.message!.contains(
+              "ClientException with SocketException: Failed host lookup")) {
         serverSettingErrorDialog(
           context,
           "Please Set Server Details",
@@ -100,7 +104,7 @@ class Config {
 
   Future<Uint8List> downloadDataFuture(String file) async {
     var data = await storage.getFileDownload(bucketId: bucketID, fileId: file);
-    print("Downloading");
+
     return data;
   }
 

@@ -198,7 +198,7 @@ class _SettingsPageState extends State<SettingsPage> {
                               border: Border.all(),
                               borderRadius: BorderRadius.circular(4),
                             ),
-                            height: MediaQuery.of(context).size.height * 0.069,
+                            height: 48,
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
@@ -246,7 +246,7 @@ class _SettingsPageState extends State<SettingsPage> {
                               border: Border.all(),
                               borderRadius: BorderRadius.circular(4),
                             ),
-                            height: MediaQuery.of(context).size.height * 0.069,
+                            height: 48,
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
@@ -292,12 +292,15 @@ class _SettingsPageState extends State<SettingsPage> {
                         ? CustomButton(
                             onPress: () async {
                               final status = await updater.checkForUpdate();
+                              final currentPatch =
+                                  await updater.readNextPatch();
+
                               if (status == UpdateStatus.outdated &&
                                   context.mounted) {
                                 ScaffoldMessenger.of(context)
                                     .showMaterialBanner(MaterialBanner(
-                                        content:
-                                            Text("Downloading new Patch...."),
+                                        content: Text(
+                                            "Downloading Patch ${currentPatch!.number}"),
                                         actions: [
                                       IconButton(
                                           onPressed: () {
@@ -327,7 +330,9 @@ class _SettingsPageState extends State<SettingsPage> {
                                 if (context.mounted) {
                                   ScaffoldMessenger.of(context)
                                       .showMaterialBanner(MaterialBanner(
-                                    content: Text("No Updates Found"),
+                                    content: Text(currentPatch != null
+                                        ? "Already on latest Patch: ${currentPatch.number}"
+                                        : "No Patches found"),
                                     actions: [
                                       IconButton(
                                           onPressed: () {
@@ -344,83 +349,6 @@ class _SettingsPageState extends State<SettingsPage> {
                             long: true)
                         : SizedBox.shrink(),
                     Spacer(),
-                    //Spacer(),
-                    /* CustomButton(
-                        onPress: () async {
-                          ScaffoldMessenger.of(context).clearMaterialBanners();
-                          var isUpdated = false;
-                          if (endPointController.text != "") {
-                            isUpdated = true;
-                            await settingsBox.put(
-                                "endpoint", endPointController.text);
-                          }
-                          if (projectController.text != "") {
-                            isUpdated = true;
-                            await settingsBox.put(
-                                "projectID", projectController.text);
-                          }
-                          if (databaseController.text != "") {
-                            isUpdated = true;
-                            await settingsBox.put(
-                                "databaseID", databaseController.text);
-                          }
-                          if (documentController.text != "") {
-                            isUpdated = true;
-                            await settingsBox.put(
-                                "documentID", documentController.text);
-                          }
-                          if (collectionController.text != "") {
-                            isUpdated = true;
-                            await settingsBox.put(
-                                "collectionID", collectionController.text);
-                          }
-                          if (attributeController.text != "") {
-                            isUpdated = true;
-                            await settingsBox.put(
-                                "attributeName", attributeController.text);
-                          }
-                          if (bucketController.text != "") {
-                            isUpdated = true;
-                            await settingsBox.put(
-                                "bucketID", bucketController.text);
-                          }
-                          if (settingsBox.get("endpoint") !=
-                                  "https://cloud.appwrite.io/v1" &&
-                              !isUpdated) {
-                            isUpdated = true;
-                            await settingsBox.put(
-                                "endpoint", "https://cloud.appwrite.io/v1");
-                          }
-                          if (settingsBox.get("attributeName") != "clipboard" &&
-                              !isUpdated) {
-                            isUpdated = true;
-                            await settingsBox.put("attributeName", "clipboard");
-                          }
-                          if (context.mounted) {
-                            if (isUpdated) {
-                              endPointController.clear();
-                              projectController.clear();
-                              databaseController.clear();
-                              documentController.clear();
-                              collectionController.clear();
-                              attributeController.clear();
-                              bucketController.clear();
-
-                              setState(() {});
-                              ScaffoldMessenger.of(context).showMaterialBanner(
-                                banner(
-                                    "Settings Updated Succesfully", isUpdated),
-                              );
-                            } else {
-                              ScaffoldMessenger.of(context).showMaterialBanner(
-                                banner("No Changes", isUpdated),
-                              );
-                            }
-                          }
-                        },
-                        buttonText: "Update",
-                        long: true),
-                    Spacer(), */
                   ],
                 ),
               ),
