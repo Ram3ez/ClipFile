@@ -28,7 +28,7 @@
         </activity>
         <provider
             android:name="com.superlist.super_native_extensions.DataProvider"
-            android:authorities="<your-package-name>.SuperClipboardDataProvider"
+            android:authorities="com.example.clipfile.SuperClipboardDataProvider"
             android:exported="true"
             android:grantUriPermissions="true" >
         </provider>

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:appwrite/models.dart';
 import 'package:clipfile/components/dismiss_tile.dart';
 import 'package:clipfile/components/image_preview.dart';
@@ -64,7 +66,7 @@ class FilesContainer extends StatelessWidget {
     return DropRegion(
       formats: Formats.standardFormats,
       onDropOver: (DropOverEvent event) async {
-        if (event.session.allowedOperations.length == 1) {
+        if (event.session.allowedOperations.length == 1 && Platform.isWindows) {
           return DropOperation.forbidden;
         }
         return DropOperation.copy;
