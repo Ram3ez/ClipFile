@@ -1,5 +1,6 @@
 import "dart:io";
 
+import "package:clipfile/components/custom_banner.dart";
 import "package:flutter/material.dart";
 import "package:google_fonts/google_fonts.dart";
 import "package:restart_app/restart_app.dart";
@@ -17,7 +18,7 @@ class CustomTextField extends StatelessWidget {
   final String hint;
   final void Function()? onChanged;
 
-  MaterialBanner banner(String text, BuildContext context) {
+  /* MaterialBanner banner(String text, BuildContext context) {
     return MaterialBanner(
       content: Text(text),
       contentTextStyle: GoogleFonts.poppins(
@@ -48,7 +49,7 @@ class CustomTextField extends StatelessWidget {
             ))
       ],
     );
-  }
+  } */
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +59,7 @@ class CustomTextField extends StatelessWidget {
         onEditingComplete: () {
           onChanged!();
           ScaffoldMessenger.of(context).showMaterialBanner(
-            banner("Settings Updated Succesfully", context),
+            CustomBanner.customBanner("Settings Updated Succesfully", context),
           );
         },
         controller: controller,

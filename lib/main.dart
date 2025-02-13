@@ -1,8 +1,8 @@
-import 'package:clipfile/config.dart';
 import 'package:clipfile/pages/settings_page.dart';
 import 'package:clipfile/secrets.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:clipfile/providers/clip_data_provider.dart';
@@ -12,6 +12,7 @@ import 'package:clipfile/pages/clipboard/clipboard_page.dart';
 import 'package:clipfile/pages/files/files_button_page.dart';
 import 'package:clipfile/pages/files/files_page.dart';
 import 'package:quick_actions/quick_actions.dart';
+import 'package:shorebird_code_push/shorebird_code_push.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'dart:io';
 import 'package:window_manager/window_manager.dart';
@@ -115,21 +116,47 @@ class _MainAppState extends State<MainApp> {
     }
   }
 
+  void _checkForUpdates() async {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final updater = ShorebirdUpdater();
+      if (updater.isAvailable) {
+        final status = await updater.checkForUpdate();
+        if (status == UpdateStatus.outdated && mounted) {
+          showDialog(
+              context: context,
+              builder: (context) {
+                return AlertDialog(
+                  title: Text(
+                    "New Update Available",
+                    style: GoogleFonts.poppins(
+                      fontSize: 18,
+                    ),
+                  ),
+                  content: Text(
+                    "A new patch is ready to be installed, Please go to the settings.",
+                    style: GoogleFonts.poppins(fontSize: 14),
+                  ),
+                  actions: [
+                    TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: Text("Ok"))
+                  ],
+                );
+              });
+        }
+      }
+      //}
+      //return null;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
     initHive();
-    /* WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (Config.bucketID == "" ||
-          Config.collectionID == "" ||
-          Config.documentID == "" ||
-          Config.databaseID == "" ||
-          Config.projectID == "" ||
-          Config.endpoint == "" ||
-          Config.attributeName == "") {
-        Config().serverSettingErrorDialog(context, "Please Set Server Details");
-      }
-    }); */
+    _checkForUpdates();
     if (Platform.isIOS || Platform.isAndroid) {
       final QuickActions quickActions = const QuickActions();
       quickActions.initialize((shortcutType) {

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:clipfile/components/clipboard_container.dart';
 import 'package:clipfile/pages/settings_page.dart';
 import 'package:flutter/material.dart';
@@ -30,6 +32,11 @@ class _ClipboardPageState extends State<ClipboardPage> {
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
+    /* WidgetsBinding.instance.addPersistentFrameCallback((_) {
+      ScaffoldMessenger.of(context).showMaterialBanner(MaterialBanner(
+          content: Text("Patch Available"),
+          actions: [IconButton(onPressed: () {}, icon: Icon(Icons.upgrade))]));
+    }); */
 
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
@@ -43,20 +50,22 @@ class _ClipboardPageState extends State<ClipboardPage> {
           ),
         ),
         actions: [
-          IconButton(
-              onPressed: () async {
-                var data = await Config().getData(context);
-                setState(() {
-                  if (mounted) {
-                    final reader = context.read<ClipDataProvider>();
-                    reader.update(data);
-                  }
-                });
-              },
-              icon: Icon(
-                Icons.refresh_rounded,
-                color: Colors.white,
-              )),
+          !Platform.isWindows
+              ? SizedBox.shrink()
+              : IconButton(
+                  onPressed: () async {
+                    var data = await Config().getData(context);
+                    setState(() {
+                      if (mounted) {
+                        final reader = context.read<ClipDataProvider>();
+                        reader.update(data);
+                      }
+                    });
+                  },
+                  icon: Icon(
+                    Icons.refresh_rounded,
+                    color: Colors.white,
+                  )),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: IconButton(

@@ -73,109 +73,114 @@ class FilesContainer extends StatelessWidget {
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               var files = snapshot.data as FileList;
-              return LiquidPullToRefresh(
-                showChildOpacityTransition: true,
-                color: Theme.of(context).secondaryHeaderColor,
-                onRefresh: () async {
-                  if (context.mounted) {
-                    final updater = context.read<FileProvider>();
-                    updater.update();
-                  }
-                },
-                child: ListView.builder(
-                  itemCount: files.total,
-                  itemBuilder: (context, index) {
-                    var [
-                      String fileName,
-                      double fileSize,
-                      String fileID,
-                      bool isKB,
-                      IconData icon,
-                    ] = init(files, index);
+              return ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: LiquidPullToRefresh(
+                  animSpeedFactor: 2,
+                  showChildOpacityTransition: true,
+                  color: Theme.of(context).primaryColor,
+                  onRefresh: () async {
+                    if (context.mounted) {
+                      final updater = context.read<FileProvider>();
+                      updater.update();
+                    }
+                  },
+                  child: ListView.builder(
+                    itemCount: files.total,
+                    itemBuilder: (context, index) {
+                      var [
+                        String fileName,
+                        double fileSize,
+                        String fileID,
+                        bool isKB,
+                        IconData icon,
+                      ] = init(files, index);
 
-                    /* return Text(
-                            "$fileName ${fileSize.toStringAsFixed(2)} ${isKB ? "KB" : "MB"}"); */
-                    return Column(
-                      children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(15),
-                          clipBehavior: Clip.antiAlias,
-                          child: DismissTile(
-                            onDelete: onDelete,
-                            onDownload: onDownload,
-                            fileID: fileID,
-                            fileName: fileName,
-                            child: InkWell(
-                              onLongPress: () {
-                                HapticFeedback.heavyImpact();
-                                ImagePreview.imagePreview(
-                                    context, fileID, fileName);
-                              },
-                              child: Container(
-                                padding: EdgeInsets.only(
-                                    left: 12, top: 10, bottom: 10, right: 10),
-                                decoration: BoxDecoration(
-                                  color: Theme.of(context).primaryColor,
-                                ),
-                                height: 75,
-                                child: Row(
-                                  children: [
-                                    Container(
-                                        margin: EdgeInsets.all(8),
-                                        padding: EdgeInsets.all(5),
-                                        decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          borderRadius:
-                                              BorderRadius.circular(100),
-                                          backgroundBlendMode:
-                                              BlendMode.softLight,
-                                        ),
-                                        child: Icon(
-                                          icon,
-                                          color: Theme.of(context)
-                                              .secondaryHeaderColor,
-                                        )),
-                                    SizedBox(
-                                      width: MediaQuery.of(context).size.width *
-                                          0.55,
-                                      height: 65,
-                                      child: Align(
-                                        alignment: Alignment.centerLeft,
-                                        child: Text(
-                                          fileName.length > 20
-                                              ? '${fileName.substring(0, 20)}...'
-                                              : fileName,
-                                          overflow: TextOverflow.ellipsis,
-                                          maxLines: 1,
-                                          style: GoogleFonts.poppins(
-                                            fontSize: 16,
+                      /* return Text(
+                              "$fileName ${fileSize.toStringAsFixed(2)} ${isKB ? "KB" : "MB"}"); */
+                      return Column(
+                        children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(15),
+                            clipBehavior: Clip.antiAlias,
+                            child: DismissTile(
+                              onDelete: onDelete,
+                              onDownload: onDownload,
+                              fileID: fileID,
+                              fileName: fileName,
+                              child: InkWell(
+                                onLongPress: () {
+                                  HapticFeedback.heavyImpact();
+                                  ImagePreview.imagePreview(
+                                      context, fileID, fileName);
+                                },
+                                child: Container(
+                                  padding: EdgeInsets.only(
+                                      left: 12, top: 10, bottom: 10, right: 10),
+                                  decoration: BoxDecoration(
+                                    color: Theme.of(context).primaryColor,
+                                  ),
+                                  height: 75,
+                                  child: Row(
+                                    children: [
+                                      Container(
+                                          margin: EdgeInsets.all(8),
+                                          padding: EdgeInsets.all(5),
+                                          decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius:
+                                                BorderRadius.circular(100),
+                                            backgroundBlendMode:
+                                                BlendMode.softLight,
+                                          ),
+                                          child: Icon(
+                                            icon,
+                                            color: Theme.of(context)
+                                                .secondaryHeaderColor,
+                                          )),
+                                      SizedBox(
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.55,
+                                        height: 65,
+                                        child: Align(
+                                          alignment: Alignment.centerLeft,
+                                          child: Text(
+                                            fileName.length > 20
+                                                ? '${fileName.substring(0, 20)}...'
+                                                : fileName,
+                                            overflow: TextOverflow.ellipsis,
+                                            maxLines: 1,
+                                            style: GoogleFonts.poppins(
+                                              fontSize: 16,
+                                            ),
                                           ),
                                         ),
                                       ),
-                                    ),
-                                    Spacer(),
-                                    RotatedBox(
-                                      quarterTurns: 1,
-                                      child: Text(
-                                        "${isKB ? fileSize.toStringAsFixed(1) : fileSize.toStringAsFixed(2)} ${isKB ? "KB" : "MB"}",
-                                        style: GoogleFonts.poppins(
-                                          fontSize: 12,
-                                          color: Color.fromRGBO(0, 0, 0, 0.5),
+                                      Spacer(),
+                                      RotatedBox(
+                                        quarterTurns: 1,
+                                        child: Text(
+                                          "${isKB ? fileSize.toStringAsFixed(1) : fileSize.toStringAsFixed(2)} ${isKB ? "KB" : "MB"}",
+                                          style: GoogleFonts.poppins(
+                                            fontSize: 12,
+                                            color: Color.fromRGBO(0, 0, 0, 0.5),
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
                           ),
-                        ),
-                        SizedBox(
-                          height: 25,
-                        ),
-                      ],
-                    );
-                  },
+                          SizedBox(
+                            height: 25,
+                          ),
+                        ],
+                      );
+                    },
+                  ),
                 ),
               );
             }

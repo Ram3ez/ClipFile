@@ -1,9 +1,12 @@
 import 'dart:io';
+import 'package:clipfile/components/custom_banner.dart';
+import 'package:clipfile/components/custom_button.dart';
 import 'package:clipfile/components/custom_text_field.dart';
 import 'package:clipfile/config.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:shorebird_code_push/shorebird_code_push.dart';
 import 'package:window_manager/window_manager.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -32,7 +35,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
   bool onTop = Config.alwaysOnTop == "false" ? false : true;
   bool fixedSize = Config.fixedSize == "true" ? true : false;
-
+  final updater = ShorebirdUpdater();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -53,6 +56,7 @@ class _SettingsPageState extends State<SettingsPage> {
             padding: const EdgeInsets.only(right: 8),
             child: IconButton(
               onPressed: () {
+                ScaffoldMessenger.of(context).clearMaterialBanners();
                 Navigator.of(context).pop();
               },
               color: Colors.white,
@@ -283,6 +287,61 @@ class _SettingsPageState extends State<SettingsPage> {
                               ],
                             ),
                           ),
+                    Spacer(),
+                    //updater.isAvailable
+                    CustomButton(
+                        onPress: () async {
+                          final status = await updater.checkForUpdate();
+                          if (status == UpdateStatus.outdated &&
+                              context.mounted) {
+                            ScaffoldMessenger.of(context).showMaterialBanner(
+                                MaterialBanner(
+                                    content: Text("Downloading new Patch...."),
+                                    actions: [
+                                  IconButton(
+                                      onPressed: () {
+                                        ScaffoldMessenger.of(context)
+                                            .clearMaterialBanners();
+                                      },
+                                      icon: Icon(Icons.close))
+                                ]));
+                            try {
+                              await updater.update();
+                              if (context.mounted) {
+                                ScaffoldMessenger.of(context)
+                                    .clearMaterialBanners();
+                                ScaffoldMessenger.of(context)
+                                    .showMaterialBanner(
+                                        CustomBanner.customBanner(
+                                            "updated Succesfully", context));
+                              }
+                            } on UpdateException catch (e) {
+                              if (context.mounted) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(content: Text(e.reason.name)));
+                              }
+                            }
+                          } else {
+                            if (context.mounted) {
+                              ScaffoldMessenger.of(context)
+                                  .showMaterialBanner(MaterialBanner(
+                                content: Text("No Updates Found"),
+                                actions: [
+                                  IconButton(
+                                      onPressed: () {
+                                        ScaffoldMessenger.of(context)
+                                            .clearMaterialBanners();
+                                      },
+                                      icon: Icon(Icons.close))
+                                ],
+                              ));
+                            }
+                          }
+                        },
+                        buttonText: "Check For Updates",
+                        long: true),
+                    //: SizedBox.shrink(),
+                    Spacer(),
                     //Spacer(),
                     /* CustomButton(
                         onPress: () async {
