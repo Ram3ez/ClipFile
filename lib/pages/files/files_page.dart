@@ -27,12 +27,12 @@ class _FilesPageState extends State<FilesPage> {
     fileList = config.listFiles(context);
   }
 
-  void onDelete(String fileID) async {
+  Future<void> onDelete(String fileID) async {
     try {
       await config.deleteData(fileID);
       if (mounted) {
         final updater = context.read<FileProvider>();
-        updater.update();
+        await updater.update();
       }
     } on AppwriteException catch (e) {
       if (mounted) {

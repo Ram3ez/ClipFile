@@ -1,9 +1,5 @@
-import "dart:io";
-
 import "package:clipfile/components/custom_banner.dart";
 import "package:flutter/material.dart";
-import "package:google_fonts/google_fonts.dart";
-import "package:restart_app/restart_app.dart";
 
 class CustomTextField extends StatelessWidget {
   const CustomTextField(

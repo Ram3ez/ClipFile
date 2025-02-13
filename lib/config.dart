@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:appwrite/appwrite.dart';
 import 'package:appwrite/enums.dart';
 import 'package:appwrite/models.dart';
@@ -96,7 +98,13 @@ class Config {
     return data.asStream();
   }
 
-  Future<File> insertData(
+  Future<Uint8List> downloadDataFuture(String file) async {
+    var data = await storage.getFileDownload(bucketId: bucketID, fileId: file);
+    print("Downloading");
+    return data;
+  }
+
+  Future<File?> insertData(
       {String? path, Uint8List? bytes, String? name}) async {
     try {
       var result = await storage.createFile(
@@ -108,6 +116,9 @@ class Config {
       return result;
     } on AppwriteException {
       rethrow;
+    } catch (e) {
+      log(e.toString());
+      return null;
     }
   }
 

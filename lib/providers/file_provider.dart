@@ -13,9 +13,9 @@ class FileProvider extends ChangeNotifier {
     return FileProvider._();
   }
 
-  void update() async {
+  Future<void> update() async {
     _fileList = Config().listFiles();
-
+    await _fileList;
     notifyListeners();
   }
 }
