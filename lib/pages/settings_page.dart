@@ -288,59 +288,61 @@ class _SettingsPageState extends State<SettingsPage> {
                             ),
                           ),
                     Spacer(),
-                    //updater.isAvailable
-                    CustomButton(
-                        onPress: () async {
-                          final status = await updater.checkForUpdate();
-                          if (status == UpdateStatus.outdated &&
-                              context.mounted) {
-                            ScaffoldMessenger.of(context).showMaterialBanner(
-                                MaterialBanner(
-                                    content: Text("Downloading new Patch...."),
+                    updater.isAvailable
+                        ? CustomButton(
+                            onPress: () async {
+                              final status = await updater.checkForUpdate();
+                              if (status == UpdateStatus.outdated &&
+                                  context.mounted) {
+                                ScaffoldMessenger.of(context)
+                                    .showMaterialBanner(MaterialBanner(
+                                        content:
+                                            Text("Downloading new Patch...."),
+                                        actions: [
+                                      IconButton(
+                                          onPressed: () {
+                                            ScaffoldMessenger.of(context)
+                                                .clearMaterialBanners();
+                                          },
+                                          icon: Icon(Icons.close))
+                                    ]));
+                                try {
+                                  await updater.update();
+                                  if (context.mounted) {
+                                    ScaffoldMessenger.of(context)
+                                        .clearMaterialBanners();
+                                    ScaffoldMessenger.of(context)
+                                        .showMaterialBanner(
+                                            CustomBanner.customBanner(
+                                                "updated Succesfully",
+                                                context));
+                                  }
+                                } on UpdateException catch (e) {
+                                  if (context.mounted) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(content: Text(e.reason.name)));
+                                  }
+                                }
+                              } else {
+                                if (context.mounted) {
+                                  ScaffoldMessenger.of(context)
+                                      .showMaterialBanner(MaterialBanner(
+                                    content: Text("No Updates Found"),
                                     actions: [
-                                  IconButton(
-                                      onPressed: () {
-                                        ScaffoldMessenger.of(context)
-                                            .clearMaterialBanners();
-                                      },
-                                      icon: Icon(Icons.close))
-                                ]));
-                            try {
-                              await updater.update();
-                              if (context.mounted) {
-                                ScaffoldMessenger.of(context)
-                                    .clearMaterialBanners();
-                                ScaffoldMessenger.of(context)
-                                    .showMaterialBanner(
-                                        CustomBanner.customBanner(
-                                            "updated Succesfully", context));
+                                      IconButton(
+                                          onPressed: () {
+                                            ScaffoldMessenger.of(context)
+                                                .clearMaterialBanners();
+                                          },
+                                          icon: Icon(Icons.close))
+                                    ],
+                                  ));
+                                }
                               }
-                            } on UpdateException catch (e) {
-                              if (context.mounted) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(content: Text(e.reason.name)));
-                              }
-                            }
-                          } else {
-                            if (context.mounted) {
-                              ScaffoldMessenger.of(context)
-                                  .showMaterialBanner(MaterialBanner(
-                                content: Text("No Updates Found"),
-                                actions: [
-                                  IconButton(
-                                      onPressed: () {
-                                        ScaffoldMessenger.of(context)
-                                            .clearMaterialBanners();
-                                      },
-                                      icon: Icon(Icons.close))
-                                ],
-                              ));
-                            }
-                          }
-                        },
-                        buttonText: "Check For Updates",
-                        long: true),
-                    //: SizedBox.shrink(),
+                            },
+                            buttonText: "Check For Updates",
+                            long: true)
+                        : SizedBox.shrink(),
                     Spacer(),
                     //Spacer(),
                     /* CustomButton(
