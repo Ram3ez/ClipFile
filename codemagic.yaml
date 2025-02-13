@@ -11,7 +11,7 @@ definitions:
       vars:
         # The bundle ID of this example app.
         # Replace this with your app's bundle id.
-        BUNDLE_ID: dev.shorebird.codemagic-demo
+        BUNDLE_ID: com.example.clipfile
         FLUTTER_VERSION: 3.27.4
   scripts:
     # Download the Shorebird CLI and add it to the PATH.
