@@ -66,7 +66,7 @@ class FilesContainer extends StatelessWidget {
     return DropRegion(
       formats: Formats.standardFormats,
       onDropOver: (DropOverEvent event) async {
-        if (event.session.allowedOperations.length == 1 && Platform.isWindows) {
+        if (event.session.allowedOperations.length == 1) {
           return DropOperation.forbidden;
         }
         return DropOperation.copy;
