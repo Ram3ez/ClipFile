@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:appwrite/models.dart';
 import 'package:clipfile/components/dismiss_tile.dart';
 import 'package:clipfile/components/image_preview.dart';
@@ -182,7 +180,9 @@ class FilesContainer extends StatelessWidget {
                                         decoration: BoxDecoration(
                                           color: Theme.of(context).primaryColor,
                                         ),
-                                        height: 75,
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                0.11,
                                         child: Row(
                                           children: [
                                             Container(
