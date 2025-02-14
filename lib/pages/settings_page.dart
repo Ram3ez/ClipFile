@@ -299,21 +299,23 @@ class _SettingsPageState extends State<SettingsPage> {
                                   context.mounted) {
                                 ScaffoldMessenger.of(context)
                                     .showMaterialBanner(MaterialBanner(
-                                        content: Text(
-                                            "Downloading Patch ${currentPatch!.number}"),
+                                        content: Text("Downloading.... "),
                                         actions: [
-                                      IconButton(
-                                          onPressed: () {
-                                            ScaffoldMessenger.of(context)
-                                                .clearMaterialBanners();
-                                          },
-                                          icon: Icon(Icons.close))
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(right: 8.0),
+                                        child: SizedBox(
+                                          height: 14,
+                                          width: 14,
+                                          child: CircularProgressIndicator(),
+                                        ),
+                                      ),
                                     ]));
                                 try {
                                   await updater.update();
                                   if (context.mounted) {
                                     ScaffoldMessenger.of(context)
-                                        .clearMaterialBanners();
+                                        .hideCurrentMaterialBanner();
                                     ScaffoldMessenger.of(context)
                                         .showMaterialBanner(
                                             CustomBanner.customBanner(
@@ -323,7 +325,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                 } on UpdateException catch (e) {
                                   if (context.mounted) {
                                     ScaffoldMessenger.of(context).showSnackBar(
-                                        SnackBar(content: Text(e.reason.name)));
+                                        SnackBar(content: Text(e.toString())));
                                   }
                                 }
                               } else {

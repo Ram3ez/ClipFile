@@ -61,11 +61,12 @@ class DismissTile extends StatelessWidget {
               builder: (context) {
                 return AlertDialog(
                   title: Text(
-                    "Do you really want to delete this file?",
+                    "Delete file?",
                     style: GoogleFonts.poppins(),
                   ),
                   actions: [
-                    TextButton(
+                    MaterialButton(
+                        color: Theme.of(context).secondaryHeaderColor,
                         onPressed: () {
                           Navigator.of(context).pop();
                           delete = true;
@@ -73,10 +74,11 @@ class DismissTile extends StatelessWidget {
                         child: Text(
                           "Yes",
                           style: GoogleFonts.poppins(
-                            color: Theme.of(context).secondaryHeaderColor,
+                            color: Colors.white,
                           ),
                         )),
-                    TextButton(
+                    MaterialButton(
+                        color: Theme.of(context).secondaryHeaderColor,
                         onPressed: () {
                           Navigator.of(context).pop();
                           delete = false;
@@ -84,7 +86,8 @@ class DismissTile extends StatelessWidget {
                         child: Text(
                           "No",
                           style: GoogleFonts.poppins(
-                            color: Theme.of(context).secondaryHeaderColor,
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
                           ),
                         )),
                   ],

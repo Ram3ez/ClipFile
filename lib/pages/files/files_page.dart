@@ -41,7 +41,7 @@ class _FilesPageState extends State<FilesPage> {
             barrierDismissible: false,
             builder: (context) {
               return AlertDialog(
-                title: Text("Error Uploading File"),
+                title: Text("Error Deleting File"),
                 content: Text(e.message!),
                 actions: [
                   MaterialButton(
