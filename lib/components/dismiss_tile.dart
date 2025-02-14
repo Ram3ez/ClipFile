@@ -86,7 +86,7 @@ class DismissTile extends StatelessWidget {
                         child: Text(
                           "No",
                           style: GoogleFonts.poppins(
-                            color: Colors.black,
+                            color: Colors.white,
                             fontWeight: FontWeight.bold,
                           ),
                         )),
