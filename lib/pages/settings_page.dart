@@ -320,7 +320,8 @@ class _SettingsPageState extends State<SettingsPage> {
                                         .showMaterialBanner(
                                             CustomBanner.customBanner(
                                                 "updated Succesfully",
-                                                context));
+                                                context,
+                                                true));
                                   }
                                 } on UpdateException catch (e) {
                                   if (context.mounted) {

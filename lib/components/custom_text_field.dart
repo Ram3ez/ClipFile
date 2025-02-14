@@ -22,7 +22,8 @@ class CustomTextField extends StatelessWidget {
         onEditingComplete: () {
           onChanged!();
           ScaffoldMessenger.of(context).showMaterialBanner(
-            CustomBanner.customBanner("Settings Updated Succesfully", context),
+            CustomBanner.customBanner(
+                "Settings Updated Succesfully", context, false),
           );
         },
         controller: controller,
