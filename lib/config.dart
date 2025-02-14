@@ -93,8 +93,8 @@ class Config {
     }
   }
 
-  Future deleteData(String file) {
-    return storage.deleteFile(bucketId: bucketID, fileId: file);
+  Future deleteData(String file) async {
+    return await storage.deleteFile(bucketId: bucketID, fileId: file);
   }
 
   Stream<Uint8List> downloadData(String file) {
@@ -108,18 +108,57 @@ class Config {
     return data;
   }
 
-  Future<File?> insertData(
-      {String? path, Uint8List? bytes, String? name}) async {
+  Future<File?> insertData({
+    String? path,
+    Uint8List? bytes,
+    String? name,
+    BuildContext? context,
+  }) async {
     try {
       var result = await storage.createFile(
           bucketId: bucketID,
           fileId: ID.unique(),
           file: path == null
               ? InputFile.fromBytes(bytes: bytes!.toList(), filename: name!)
-              : InputFile.fromPath(path: path));
+              : InputFile.fromPath(path: path),
+          onProgress: (UploadProgress progress) {});
       return result;
-    } on AppwriteException {
-      rethrow;
+    } on AppwriteException catch (e) {
+      if (!context!.mounted) return null;
+      return showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Text(
+                "Upload Error",
+                style: GoogleFonts.poppins(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              content: Text(
+                e.message.toString(),
+                style: GoogleFonts.poppins(
+                  fontSize: 14,
+                ),
+              ),
+              actions: [
+                MaterialButton(
+                  color: Theme.of(context).secondaryHeaderColor,
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text(
+                    "Ok",
+                    style: GoogleFonts.poppins(
+                      color: Colors.white,
+                      fontSize: 16,
+                    ),
+                  ),
+                )
+              ],
+            );
+          });
     } catch (e) {
       log(e.toString());
       return null;

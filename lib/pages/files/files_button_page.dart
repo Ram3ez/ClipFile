@@ -45,19 +45,24 @@ class _FilesButtonState extends State<FilesButton> {
                   if (result != null) {
                     try {
                       if (context.mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            duration: Durations.extralong4,
-                            content: Text("Uploading Image"),
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          behavior: SnackBarBehavior.floating,
+                          content: LinearProgressIndicator(
+                            borderRadius: BorderRadius.circular(8),
+                            color: Theme.of(context).secondaryHeaderColor,
+                            backgroundColor: Theme.of(context).primaryColor,
+                            minHeight: 10,
                           ),
-                        );
+                          duration: Duration(hours: 2),
+                        ));
                       }
 
                       await config.insertData(
                           bytes: await result.readAsBytes(), name: result.name);
                       if (context.mounted) {
-                        final updater = context.read<FileProvider>();
-                        updater.update();
+                        final reader = context.read<FileProvider>();
+                        reader.update();
+                        ScaffoldMessenger.of(context).hideCurrentSnackBar();
                       }
                     } on AppwriteException catch (e) {
                       if (context.mounted) {
@@ -88,12 +93,16 @@ class _FilesButtonState extends State<FilesButton> {
                   if (result.isNotEmpty) {
                     try {
                       if (context.mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            duration: Durations.extralong4,
-                            content: Text("Uploading Media"),
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          behavior: SnackBarBehavior.floating,
+                          content: LinearProgressIndicator(
+                            borderRadius: BorderRadius.circular(8),
+                            color: Theme.of(context).secondaryHeaderColor,
+                            backgroundColor: Theme.of(context).primaryColor,
+                            minHeight: 10,
                           ),
-                        );
+                          duration: Duration(hours: 2),
+                        ));
                       }
 
                       for (var media in result) {
@@ -102,8 +111,9 @@ class _FilesButtonState extends State<FilesButton> {
                       }
 
                       if (context.mounted) {
-                        final updater = context.read<FileProvider>();
-                        updater.update();
+                        final reader = context.read<FileProvider>();
+                        reader.update();
+                        ScaffoldMessenger.of(context).hideCurrentSnackBar();
                       }
                     } on AppwriteException catch (e) {
                       if (context.mounted) {
@@ -141,12 +151,16 @@ class _FilesButtonState extends State<FilesButton> {
                 List<File> files =
                     result.paths.map((path) => File(path!)).toList();
                 if (context.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      duration: Durations.extralong4,
-                      content: Text("Uploading Files"),
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    behavior: SnackBarBehavior.floating,
+                    content: LinearProgressIndicator(
+                      borderRadius: BorderRadius.circular(8),
+                      color: Theme.of(context).secondaryHeaderColor,
+                      backgroundColor: Theme.of(context).primaryColor,
+                      minHeight: 10,
                     ),
-                  );
+                    duration: Duration(hours: 2),
+                  ));
                 }
                 for (var file in files) {
                   var bytes = await file.readAsBytes();
@@ -156,11 +170,11 @@ class _FilesButtonState extends State<FilesButton> {
                   await config.insertData(bytes: bytes, name: fileName);
                 }
                 if (context.mounted) {
-                  final updater = context.read<FileProvider>();
-                  updater.update();
+                  final reader = context.read<FileProvider>();
+                  reader.update();
+                  ScaffoldMessenger.of(context).hideCurrentSnackBar();
                 }
               } on AppwriteException catch (e) {
-                print(e);
                 if (context.mounted) {
                   showDialog(
                       context: context,

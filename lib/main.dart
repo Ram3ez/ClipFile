@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:clipfile/pages/settings_page.dart';
 import 'package:clipfile/secrets.dart';
 import 'package:file_picker/file_picker.dart';
