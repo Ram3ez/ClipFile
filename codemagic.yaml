@@ -1,7 +1,7 @@
 definitions:
   environment:
     shared_env: &shared_env
-      flutter: 3.27.4
+      flutter: 3.29.0 #3.27.4
       groups:
         # Export the shorebird group to make $SHOREBIRD_TOKEN available to
         #   the Shorebird CLI.
@@ -12,7 +12,7 @@ definitions:
         # The bundle ID of this example app.
         # Replace this with your app's bundle id.
         BUNDLE_ID: com.example.clipfile
-        FLUTTER_VERSION: 3.27.4
+        FLUTTER_VERSION: 3.29.0 #3.27.4
   scripts:
     # Download the Shorebird CLI and add it to the PATH.
     - &shorebird_install
