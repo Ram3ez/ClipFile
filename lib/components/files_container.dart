@@ -30,8 +30,17 @@ class _FilesContainerState extends State<FilesContainer> {
   List<dynamic> init(FileList fileList, int index) {
     String fileName = fileList.files[index].name;
     double fileSize = fileList.files[index].sizeOriginal / 1024;
+    DateTime fileDateTime =
+        DateTime.parse(fileList.files[index].$updatedAt).toLocal();
+    bool isAM = fileDateTime.hour < 12;
+    int correction = !isAM ? 12 : 0;
     bool isKB = fileSize < 1000;
     fileSize = fileSize > 1000 ? fileSize / 1024 : fileSize;
+    String fileTime =
+        "${fileDateTime.hour - correction}:${fileDateTime.minute.toString().padLeft(2, "0")} ${isAM ? "AM" : "PM"}";
+    String fileDate =
+        "${fileDateTime.day}/${fileDateTime.month}/${fileDateTime.year}";
+    //fileDateTime.substring(0, fileDateTime.indexOf("T"));
 
     IconData icon;
     var ext = fileName.substring(fileName.lastIndexOf(".") + 1);
@@ -55,16 +64,32 @@ class _FilesContainerState extends State<FilesContainer> {
       case "exe" || "msix":
         icon = Icons.window_sharp;
         break;
+      case "ppt" || "docx" || "xlsx":
+        icon = Icons.file_copy;
+        break;
+      case "pdf":
+        icon = Icons.picture_as_pdf;
+        break;
       default:
         icon = Icons.question_mark;
         break;
     }
 
-    return [fileName, fileSize, fileList.files[index].$id, isKB, icon];
+    return [
+      fileName,
+      fileDate,
+      fileTime,
+      fileSize,
+      fileList.files[index].$id,
+      isKB,
+      icon
+    ];
   }
 
   @override
   Widget build(BuildContext context) {
+    int width = (MediaQuery.sizeOf(context).width * 0.07).toInt();
+
     return DropRegion(
       formats: Formats.standardFormats,
       onDropOver: (DropOverEvent event) async {
@@ -123,6 +148,8 @@ class _FilesContainerState extends State<FilesContainer> {
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   var files = snapshot.data as FileList;
+                  files.files.sort((fileA, fileB) =>
+                      fileB.$updatedAt.compareTo(fileA.$updatedAt));
                   return ClipRRect(
                     borderRadius: BorderRadius.circular(10),
                     child: LiquidPullToRefresh(
@@ -145,6 +172,8 @@ class _FilesContainerState extends State<FilesContainer> {
                         itemBuilder: (context, index) {
                           var [
                             String fileName,
+                            String fileDate,
+                            String fileTime,
                             double fileSize,
                             String fileID,
                             bool isKB,
@@ -221,18 +250,31 @@ class _FilesContainerState extends State<FilesContainer> {
                                                 color: Theme.of(context)
                                                     .secondaryHeaderColor,
                                               )),
-                                          Align(
-                                            alignment: Alignment.centerLeft,
-                                            child: Text(
-                                              fileName.length > 20
-                                                  ? '${fileName.substring(0, 20)}...'
-                                                  : fileName,
-                                              overflow: TextOverflow.ellipsis,
-                                              maxLines: 1,
-                                              style: GoogleFonts.poppins(
-                                                fontSize: 16,
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Text(
+                                                '${fileName.substring(0, fileName.length > width ? width - 5 : fileName.length)}${fileName.length > width ? "..." : ""}',
+                                                /* fileName.length > width
+                                                    ? '${fileName.substring(0, width)}...'
+                                                    : fileName, */
+                                                overflow: TextOverflow.ellipsis,
+                                                maxLines: 1,
+                                                textAlign: TextAlign.start,
+                                                style: GoogleFonts.poppins(
+                                                  fontSize: 16,
+                                                ),
                                               ),
-                                            ),
+                                              Text(
+                                                "$fileDate $fileTime",
+                                                style: GoogleFonts.poppins(
+                                                    color:
+                                                        Colors.grey.shade800),
+                                              ),
+                                            ],
                                           ),
                                           Spacer(),
                                           RotatedBox(
