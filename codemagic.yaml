@@ -101,7 +101,7 @@ workflows:
         script: |
           shorebird release android \
             --flutter-version="$FLUTTER_VERSION" \
-            —artifact apk 
+            --artifact apk 
     artifacts:
       - build/**/outputs/**/*.aab
       - build/**/outputs/**/*.apk
