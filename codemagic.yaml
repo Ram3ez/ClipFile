@@ -100,7 +100,6 @@ workflows:
       - name: Shorebird Release
         script: |
           shorebird release android \
-            --flutter-version="$FLUTTER_VERSION" \
             --artifact apk \
             --flutter-version=3.27.4
     artifacts:
