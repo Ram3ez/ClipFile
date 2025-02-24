@@ -39,6 +39,7 @@ class _FilesButtonState extends State<FilesButton> {
             ? SizedBox.shrink()
             : CustomButton(
                 onPress: () async {
+                  HapticFeedback.heavyImpact();
                   final XFile? result = await ImagePicker().pickImage(
                     source: ImageSource.camera,
                   );
@@ -88,6 +89,7 @@ class _FilesButtonState extends State<FilesButton> {
                   }
                 },
                 onLongPress: () async {
+                  HapticFeedback.heavyImpact();
                   final List<XFile> result =
                       await ImagePicker().pickMultipleMedia();
                   if (result.isNotEmpty) {

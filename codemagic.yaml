@@ -88,3 +88,35 @@ workflows:
         script: |
           shorebird patch ios \
             --no-codesign
+  
+  release-android-workflow:
+    name: Release Android
+    instance_type: mac_mini_m2
+    environment:
+      <<: *shared_env
+    scripts:
+      - *shorebird_install
+      - *fetch_dependencies
+      - name: Shorebird Release
+        script: |
+          shorebird release android \
+            --artifact apk \
+            --flutter-version=3.27.4
+    artifacts:
+      - build/**/outputs/**/*.aab
+      - build/**/outputs/**/*.apk
+      - build/**/outputs/**/mapping.txt
+      - flutter_drive.log
+   
+
+  patch-android-workflow:
+    name: Patch Android
+    instance_type: mac_mini_m2
+    environment:
+      <<: *shared_env
+    scripts:
+      - *shorebird_install
+      - *fetch_dependencies
+      - name: Shorebird Patch
+        script: |
+          shorebird patch android
