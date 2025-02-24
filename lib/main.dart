@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:clipfile/pages/options_page.dart';
 import 'package:clipfile/pages/settings_page.dart';
 import 'package:clipfile/secrets.dart';
 import 'package:file_picker/file_picker.dart';
@@ -55,7 +56,7 @@ void main() async {
   runApp(MaterialApp(
     debugShowCheckedModeBanner: false,
 
-    home: MainApp(), //MainApp(),
+    home: OptionsPage(), //MainApp(),
     theme: ThemeData(
       useMaterial3: true,
       primaryColor: Color.fromRGBO(142, 157, 169, 1),
