@@ -7,11 +7,15 @@ class CustomTextField extends StatelessWidget {
       required this.controller,
       required this.label,
       required this.hint,
+      this.isPassword = false,
+      this.isSetting = true,
       this.onChanged});
 
   final TextEditingController controller;
   final String label;
   final String hint;
+  final bool isPassword;
+  final bool isSetting;
   final void Function()? onChanged;
 
   @override
@@ -19,12 +23,15 @@ class CustomTextField extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: TextField(
+        obscureText: isPassword,
         onEditingComplete: () {
-          onChanged!();
-          ScaffoldMessenger.of(context).showMaterialBanner(
-            CustomBanner.customBanner(
-                "Settings Updated Succesfully", context, false),
-          );
+          onChanged ?? ();
+          isSetting
+              ? ScaffoldMessenger.of(context).showMaterialBanner(
+                  CustomBanner.customBanner(
+                      "Settings Updated Succesfully", context, false),
+                )
+              : 1;
         },
         controller: controller,
         decoration: InputDecoration(

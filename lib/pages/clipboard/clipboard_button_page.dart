@@ -6,6 +6,7 @@ import "package:clipfile/providers/clip_data_provider.dart";
 import "package:clipfile/components/custom_button.dart";
 import "package:clipfile/config.dart";
 
+// ignore: must_be_immutable
 class ClipButton extends StatefulWidget {
   ClipButton({super.key});
 

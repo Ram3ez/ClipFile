@@ -9,8 +9,11 @@ import 'package:provider/provider.dart';
 import 'package:clipfile/providers/clip_data_provider.dart';
 import 'package:clipfile/config.dart';
 
+// ignore: must_be_immutable
 class ClipboardPage extends StatefulWidget {
-  const ClipboardPage({super.key});
+  ClipboardPage({super.key, this.isDev = false});
+
+  late bool isDev;
 
   @override
   State<ClipboardPage> createState() => _ClipboardPageState();
@@ -70,8 +73,8 @@ class _ClipboardPageState extends State<ClipboardPage> {
             padding: const EdgeInsets.all(8.0),
             child: IconButton(
               onPressed: () {
-                Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => SettingsPage()));
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => SettingsPage(isDev: widget.isDev)));
               },
               icon: Icon(Icons.settings_outlined),
               iconSize: 25,

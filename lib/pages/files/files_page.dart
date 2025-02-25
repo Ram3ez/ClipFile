@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:appwrite/appwrite.dart';
 import 'package:clipfile/components/files_container.dart';
 import 'package:clipfile/pages/settings_page.dart';
@@ -10,8 +9,10 @@ import 'package:provider/provider.dart';
 import 'package:clipfile/config.dart';
 import 'package:clipfile/providers/file_provider.dart';
 
+// ignore: must_be_immutable
 class FilesPage extends StatefulWidget {
-  const FilesPage({super.key});
+  FilesPage({super.key, this.isDev = false});
+  late bool isDev;
 
   @override
   State<FilesPage> createState() => _FilesPageState();
@@ -101,8 +102,8 @@ class _FilesPageState extends State<FilesPage> {
               padding: const EdgeInsets.all(8.0),
               child: IconButton(
                 onPressed: () {
-                  Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => SettingsPage()));
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => SettingsPage(isDev: widget.isDev)));
                 },
                 icon: Icon(Icons.settings_outlined),
                 iconSize: 25,

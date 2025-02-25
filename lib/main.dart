@@ -1,6 +1,7 @@
 import 'dart:async';
-import 'package:clipfile/pages/options_page.dart';
+import 'package:clipfile/pages/Authentication/options_page.dart';
 import 'package:clipfile/pages/settings_page.dart';
+import 'package:clipfile/providers/auth_provider.dart';
 import 'package:clipfile/secrets.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -53,20 +54,28 @@ void main() async {
     FilePicker.platform.clearTemporaryFiles();
   }
 
-  runApp(MaterialApp(
-    debugShowCheckedModeBanner: false,
+  runApp(ChangeNotifierProvider(
+    create: (context) => AuthProvider(),
+    child: MaterialApp(
+      debugShowCheckedModeBanner: false,
 
-    home: OptionsPage(), //MainApp(),
-    theme: ThemeData(
-      useMaterial3: true,
-      primaryColor: Color.fromRGBO(142, 157, 169, 1),
-      secondaryHeaderColor: Color.fromRGBO(54, 64, 79, 1),
+      home: MainApp(
+        isDev: true,
+      ), //OptionsPage(), //MainApp(),
+      theme: ThemeData(
+        useMaterial3: true,
+        primaryColor: Color.fromRGBO(142, 157, 169, 1),
+        secondaryHeaderColor: Color.fromRGBO(54, 64, 79, 1),
+      ),
     ),
   ));
 }
 
+// ignore: must_be_immutable
 class MainApp extends StatefulWidget {
-  const MainApp({super.key});
+  MainApp({super.key, this.isDev = false});
+
+  late bool isDev;
 
   @override
   State<MainApp> createState() => _MainAppState();
@@ -83,7 +92,7 @@ class _MainAppState extends State<MainApp> {
     initialPage: 0,
   );
 
-  final pageView = PageView(
+  /* final pageView = PageView(
     controller: pageController,
     onPageChanged: (value) {
       pageController2.jumpTo(pageController.offset);
@@ -92,7 +101,7 @@ class _MainAppState extends State<MainApp> {
       ClipboardPage(),
       FilesPage(),
     ],
-  );
+  ); */
 
   final bottomView = PageView(
     controller: pageController2,
@@ -239,14 +248,23 @@ class _MainAppState extends State<MainApp> {
         child: Column(
           children: [
             Container(
-              decoration: BoxDecoration(
-                  border: Border(
-                      bottom: BorderSide(
-                color: Theme.of(context).primaryColor,
-              ))),
-              height: MediaQuery.of(context).size.height * 0.76,
-              child: pageView,
-            ),
+                decoration: BoxDecoration(
+                    border: Border(
+                        bottom: BorderSide(
+                  color: Theme.of(context).primaryColor,
+                ))),
+                height: MediaQuery.of(context).size.height * 0.76,
+                child: PageView(
+                  controller: pageController,
+                  onPageChanged: (value) {
+                    pageController2.jumpTo(pageController.offset);
+                  },
+                  children: [
+                    ClipboardPage(isDev: widget.isDev),
+                    FilesPage(isDev: widget.isDev),
+                  ],
+                ) //pageView,
+                ),
             Container(
               decoration: BoxDecoration(
                 border: Border.all(
