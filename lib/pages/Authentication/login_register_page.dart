@@ -26,8 +26,6 @@ class _LoginRegisterPageState extends State<LoginRegisterPage> {
   Widget build(BuildContext context) {
     devMode = context.watch<IsdevProvider>().isDev;
 
-    print("build");
-    print(devMode);
     if (login) {
       settingsBox.put("documentID", "");
       settingsBox.put("bucketID", "");
@@ -90,11 +88,6 @@ class _LoginRegisterPageState extends State<LoginRegisterPage> {
                     noOp = false;
                     devMode = true;
                     context.read<IsdevProvider>().update(true);
-                    /* setState(() {
-                        noOp = false;
-                        devMode = true;
-
-                      }); */
                   },
                   buttonText: "Developer Mode",
                   long: true),

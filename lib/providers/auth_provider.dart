@@ -26,9 +26,7 @@ class AuthProvider extends ChangeNotifier {
     _user = _account.get();
     try {
       await _user;
-    } on AppwriteException catch (e) {
-      print(e);
-    }
+    } catch (_) {}
   }
 
   factory AuthProvider() {
@@ -99,14 +97,9 @@ class AuthProvider extends ChangeNotifier {
     try {
       _user;
       _status = AuthStatus.authenticated;
-    } on AppwriteException catch (e) {
+    } on AppwriteException {
       _status = AuthStatus.unauthenticated;
-      print(e);
-      print("in auth");
-      print(_user);
       _user = null;
-      print("in auth");
-      print(_user);
     }
     notifyListeners();
   }

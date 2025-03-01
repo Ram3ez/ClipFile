@@ -44,54 +44,6 @@ class Config {
   Client getClient() => client;
   Account getAccount() => account;
 
-/*   Future<void> login(
-      String email, String password, BuildContext context) async {
-    try {
-      await account.createEmailPasswordSession(
-          email: email, password: password);
-      loggedInUser = await account.get();
-      if (!context.mounted) return;
-      context.read<AuthProvider>().update(account);
-    } on AppwriteException catch (e) {
-      if (!context.mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(e.message!),
-        behavior: SnackBarBehavior.floating,
-      ));
-    }
-  }
-
-  Future<void> register(
-      String name, String email, String password, BuildContext context) async {
-    try {
-      await account.create(
-          userId: ID.unique(), name: name, email: email, password: password);
-      await account.createEmailPasswordSession(
-          email: email, password: password);
-      loggedInUser = await account.get();
-    } on AppwriteException catch (e) {
-      if (!context.mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(e.message!),
-        behavior: SnackBarBehavior.floating,
-      ));
-    }
-  }
-
-  Future<void> logout(BuildContext context) async {
-    try {
-      await account.deleteSession(sessionId: "current");
-      if (!context.mounted) return;
-      context.read<AuthProvider>().update(account);
-    } on AppwriteException catch (e) {
-      if (!context.mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(e.message!),
-        behavior: SnackBarBehavior.floating,
-      ));
-    }
-  } */
-
   Future<String> getData([BuildContext? context, bool isDev = false]) async {
     try {
       var result = await databases.getDocument(

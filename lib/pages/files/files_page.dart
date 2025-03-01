@@ -115,24 +115,8 @@ class _FilesPageState extends State<FilesPage> {
           backgroundColor: Theme.of(context).secondaryHeaderColor,
         ),
         body: FilesContainer(
-          //future: state.fileList!,
           onDelete: onDelete,
           onDownload: onDownload,
-        )
-        /* Column(
-        children: [
-          SizedBox(
-            height: 20,
-          ), */
-        /* Consumer<FileProvider>(
-        builder: (context, state, child) => FilesContainer(
-          future: state.fileList!,
-          onDelete: onDelete,
-          onDownload: onDownload,
-        ),
-      ), */
-        //],
-        //),
-        );
+        ));
   }
 }

@@ -94,8 +94,6 @@ class RegisterPage extends StatelessWidget {
               Text("Have an Account?"),
               GestureDetector(
                 onTap: () {
-                  /* Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => LoginPage())); */
                   Navigator.of(context).pop();
                 },
                 child: Text(
