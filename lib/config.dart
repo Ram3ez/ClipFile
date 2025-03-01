@@ -1,5 +1,4 @@
 import 'dart:developer';
-
 import 'package:appwrite/appwrite.dart';
 import 'package:appwrite/enums.dart';
 import 'package:appwrite/models.dart';
@@ -20,13 +19,13 @@ class Config {
   static var bucketID = settingsBox.get("bucketID") ?? "";
   static var alwaysOnTop = settingsBox.get("onTop") ?? "true";
   static var fixedSize = settingsBox.get("fixedSize") ?? "false";
+  static var isDev = settingsBox.get("isDev") ?? "false";
 
   static late Client client;
+  static late Realtime realtime;
   static late Databases databases;
   static late Storage storage;
   static late Account account;
-
-  static late User? loggedInUser;
 
   Config._();
 
@@ -93,7 +92,7 @@ class Config {
     }
   } */
 
-  Future<String> getData([BuildContext? context]) async {
+  Future<String> getData([BuildContext? context, bool isDev = false]) async {
     try {
       var result = await databases.getDocument(
           databaseId: databaseID,
@@ -107,6 +106,7 @@ class Config {
         serverSettingErrorDialog(
           context,
           "Please Set Server Details",
+          isDev,
         );
       }
 
@@ -129,7 +129,8 @@ class Config {
     }
   }
 
-  Future<FileList?>? listFiles([BuildContext? context]) async {
+  Future<FileList?>? listFiles(
+      [BuildContext? context, bool isDev = false]) async {
     try {
       await storage.listFiles(bucketId: bucketID);
       return storage.listFiles(bucketId: bucketID);
@@ -140,6 +141,7 @@ class Config {
         serverSettingErrorDialog(
           context,
           "Please Set Server Details",
+          isDev,
         );
       }
       return null;
@@ -228,10 +230,11 @@ class Config {
     return data;
   }
 
-  Future<dynamic> serverSettingErrorDialog(BuildContext context, String title) {
+  Future<dynamic> serverSettingErrorDialog(
+      BuildContext context, String title, bool isDev) {
     return showDialog(
         context: context,
-        barrierDismissible: false,
+        barrierDismissible: true,
         builder: (context) {
           return AlertDialog(
             title: Text(

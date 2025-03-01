@@ -9,8 +9,8 @@ class ClipDataProvider extends ChangeNotifier {
 
   ClipDataProvider._();
 
-  factory ClipDataProvider() {
-    _clipData = Config().getData();
+  factory ClipDataProvider(bool isDev) {
+    _clipData = Config().getData(null, isDev);
     return ClipDataProvider._();
   }
 

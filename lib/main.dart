@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:clipfile/pages/Authentication/options_page.dart';
 import 'package:clipfile/pages/settings_page.dart';
 import 'package:clipfile/providers/auth_provider.dart';
+import 'package:clipfile/providers/isdev_provider.dart';
 import 'package:clipfile/secrets.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -53,15 +54,20 @@ void main() async {
   if (Platform.isAndroid || Platform.isIOS) {
     FilePicker.platform.clearTemporaryFiles();
   }
+  //Config config = Config();
 
-  runApp(ChangeNotifierProvider(
-    create: (context) => AuthProvider(),
+  runApp(MultiProvider(
+    providers: [
+      ChangeNotifierProvider(create: (context) => AuthProvider()),
+      ChangeNotifierProvider(create: (context) => IsdevProvider()),
+    ],
     child: MaterialApp(
       debugShowCheckedModeBanner: false,
 
-      home: MainApp(
+      home: OptionsPage(),
+      /* MainApp(
         isDev: true,
-      ), //OptionsPage(), //MainApp(),
+      ), */ //OptionsPage(), //MainApp(),
       theme: ThemeData(
         useMaterial3: true,
         primaryColor: Color.fromRGBO(142, 157, 169, 1),
@@ -242,8 +248,10 @@ class _MainAppState extends State<MainApp> {
       backgroundColor: Theme.of(context).primaryColor,
       body: MultiProvider(
         providers: [
-          ChangeNotifierProvider(create: (context) => ClipDataProvider()),
-          ChangeNotifierProvider(create: (context) => FileProvider()),
+          ChangeNotifierProvider(
+              create: (context) => ClipDataProvider(widget.isDev)),
+          ChangeNotifierProvider(
+              create: (context) => FileProvider(widget.isDev)),
         ],
         child: Column(
           children: [

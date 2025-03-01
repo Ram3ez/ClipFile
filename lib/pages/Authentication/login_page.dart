@@ -4,14 +4,14 @@ import "package:clipfile/pages/Authentication/register_page.dart";
 import "package:clipfile/providers/auth_provider.dart";
 import "package:flutter/material.dart";
 import "package:google_fonts/google_fonts.dart";
+import "package:hive_flutter/adapters.dart";
 import "package:provider/provider.dart";
 
 class LoginPage extends StatelessWidget {
   LoginPage({super.key});
-
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passController = TextEditingController();
-
+  final Box<String> settingsBox = Hive.box("settings");
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -62,6 +62,7 @@ class LoginPage extends StatelessWidget {
           ),
           CustomButton(
               onPress: () async {
+                if (!context.mounted) return;
                 var user = context
                     .read<AuthProvider>()
                     .login(emailController.text, passController.text, context);

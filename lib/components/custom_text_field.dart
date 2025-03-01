@@ -25,7 +25,7 @@ class CustomTextField extends StatelessWidget {
       child: TextField(
         obscureText: isPassword,
         onEditingComplete: () {
-          onChanged ?? ();
+          onChanged!();
           isSetting
               ? ScaffoldMessenger.of(context).showMaterialBanner(
                   CustomBanner.customBanner(

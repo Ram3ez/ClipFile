@@ -4,6 +4,7 @@ import 'package:clipfile/components/custom_button.dart';
 import 'package:clipfile/components/custom_text_field.dart';
 import 'package:clipfile/config.dart';
 import 'package:clipfile/providers/auth_provider.dart';
+import 'package:clipfile/providers/isdev_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -13,8 +14,7 @@ import 'package:window_manager/window_manager.dart';
 
 // ignore: must_be_immutable
 class SettingsPage extends StatefulWidget {
-  SettingsPage({super.key, this.isDev = false});
-  late bool isDev;
+  const SettingsPage({super.key});
 
   @override
   State<SettingsPage> createState() => _SettingsPageState();
@@ -39,9 +39,23 @@ class _SettingsPageState extends State<SettingsPage> {
 
   bool onTop = Config.alwaysOnTop == "false" ? false : true;
   bool fixedSize = Config.fixedSize == "true" ? true : false;
+  String userName = "";
+
+  void getUserName() async {
+    userName = (await context.read<AuthProvider>().user)?.name ?? "";
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    getUserName();
+    super.initState();
+  }
+
   final updater = ShorebirdUpdater();
   @override
   Widget build(BuildContext context) {
+    bool isDev = context.read<IsdevProvider>().isDev;
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -81,10 +95,21 @@ class _SettingsPageState extends State<SettingsPage> {
             right: 20,
           ),
           child: Center(
-            child: !widget.isDev
+            child: !isDev
                 ? Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
+                      Text(
+                        "Current User: $userName",
+                        style: GoogleFonts.poppins(
+                          color: Colors.white,
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
                       updater.isAvailable
                           ? CustomButton(
                               onPress: () async {
@@ -157,6 +182,22 @@ class _SettingsPageState extends State<SettingsPage> {
                       CustomButton(
                           onPress: () async {
                             await context.read<AuthProvider>().logout(context);
+                            settingsBox.put("documentID", "");
+                            settingsBox.put("bucketID", "");
+                            settingsBox.deleteAll([
+                              "documentID",
+                              "collectionID",
+                              "projectID",
+                              "bucketID",
+                              "attributeName",
+                              "endpoint",
+                              "databaseID",
+                            ]);
+                            Config.bucketID = "";
+                            Config.documentID = "";
+                            Config.collectionID = "";
+                            Config.databaseID = "";
+                            Config.projectID = "";
                             await Future.delayed(Duration(milliseconds: 400));
                             if (!context.mounted) return;
                             Navigator.of(context).pop();
@@ -451,6 +492,19 @@ class _SettingsPageState extends State<SettingsPage> {
                                   long: true)
                               : SizedBox.shrink(),
                           updater.isAvailable ? Spacer() : SizedBox.shrink(),
+                          CustomButton(
+                              onPress: () async {
+                                context.read<IsdevProvider>().update(false);
+                                await Future.delayed(
+                                    Duration(milliseconds: 400));
+                                if (!context.mounted) return;
+                                Navigator.of(context).pop();
+                              },
+                              buttonText: "Exit Dev Mode",
+                              long: true),
+                          SizedBox(
+                            height: 10,
+                          ),
                         ],
                       ),
                     ),

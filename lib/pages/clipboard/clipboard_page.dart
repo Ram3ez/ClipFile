@@ -26,7 +26,7 @@ class _ClipboardPageState extends State<ClipboardPage> {
   @override
   void initState() {
     super.initState();
-    clipData = config.getData(context);
+    clipData = config.getData(context, widget.isDev);
   }
 
   @override
@@ -73,8 +73,8 @@ class _ClipboardPageState extends State<ClipboardPage> {
             padding: const EdgeInsets.all(8.0),
             child: IconButton(
               onPressed: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => SettingsPage(isDev: widget.isDev)));
+                Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => SettingsPage()));
               },
               icon: Icon(Icons.settings_outlined),
               iconSize: 25,

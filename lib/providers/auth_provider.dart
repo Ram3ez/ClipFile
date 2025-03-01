@@ -22,9 +22,18 @@ class AuthProvider extends ChangeNotifier {
 
   AuthProvider._();
 
+  static initUser() async {
+    _user = _account.get();
+    try {
+      await _user;
+    } on AppwriteException catch (e) {
+      print(e);
+    }
+  }
+
   factory AuthProvider() {
     _account = Config().getAccount();
-    _user = _account.get();
+    initUser();
     return AuthProvider._();
   }
 
@@ -35,6 +44,7 @@ class AuthProvider extends ChangeNotifier {
           email: email, password: password);
       _user = account.get();
       await _user;
+      await Future.delayed(Duration(seconds: 3));
       notifyListeners();
     } on AppwriteException catch (e) {
       if (!context.mounted) return;
@@ -50,6 +60,7 @@ class AuthProvider extends ChangeNotifier {
     try {
       await account.create(
           userId: ID.unique(), name: name, email: email, password: password);
+      await Future.delayed(Duration(seconds: 2));
       await account.createEmailPasswordSession(
           email: email, password: password);
       _user = account.get();
@@ -67,7 +78,8 @@ class AuthProvider extends ChangeNotifier {
   Future<void> logout(BuildContext context) async {
     try {
       await account.deleteSession(sessionId: "current");
-      _user = account.get();
+      //_user = account.get();
+      //await _user;
       //print(_user);
       if (!context.mounted) return;
       notifyListeners();
@@ -83,8 +95,9 @@ class AuthProvider extends ChangeNotifier {
   void update(Account account) async {
     _account = account;
     _user = _account.get();
+    await _user;
     try {
-      await _user;
+      _user;
       _status = AuthStatus.authenticated;
     } on AppwriteException catch (e) {
       _status = AuthStatus.unauthenticated;

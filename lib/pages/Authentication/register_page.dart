@@ -1,8 +1,11 @@
 import "package:clipfile/components/custom_button.dart";
 import "package:clipfile/components/custom_text_field.dart";
+import "package:clipfile/config.dart";
 import "package:clipfile/providers/auth_provider.dart";
+import "package:clipfile/secrets.dart";
 import "package:flutter/material.dart";
 import "package:google_fonts/google_fonts.dart";
+import "package:hive_flutter/hive_flutter.dart";
 import "package:provider/provider.dart";
 
 class RegisterPage extends StatelessWidget {
@@ -11,6 +14,7 @@ class RegisterPage extends StatelessWidget {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passController = TextEditingController();
+  final Box<String> settingsBox = Hive.box("settings");
 
   @override
   Widget build(BuildContext context) {
@@ -53,6 +57,17 @@ class RegisterPage extends StatelessWidget {
           ),
           CustomButton(
               onPress: () async {
+                await settingsBox.put("endpoint", Secrets.endpoint);
+                await settingsBox.put("projectID", Secrets.projectID);
+                await settingsBox.put("databaseID", Secrets.databaseID);
+                await settingsBox.put("collectionID", Secrets.collectionID);
+                await settingsBox.put("attributeName", Secrets.attributeName);
+                Config.endpoint = settingsBox.get("endpoint") ?? "";
+                Config.projectID = settingsBox.get("projectID") ?? "";
+                Config.databaseID = settingsBox.get("databaseID") ?? "";
+                Config.collectionID = settingsBox.get("collectionID") ?? "";
+                Config.attributeName = settingsBox.get("attributeName") ?? "";
+                if (!context.mounted) return;
                 var user = context.read<AuthProvider>().register(
                     nameController.text,
                     emailController.text,

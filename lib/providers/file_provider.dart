@@ -8,8 +8,8 @@ class FileProvider extends ChangeNotifier {
 
   FileProvider._();
 
-  factory FileProvider() {
-    _fileList = Config().listFiles();
+  factory FileProvider(bool isDev) {
+    _fileList = Config().listFiles(null, isDev);
     return FileProvider._();
   }
 

@@ -102,8 +102,8 @@ class _FilesPageState extends State<FilesPage> {
               padding: const EdgeInsets.all(8.0),
               child: IconButton(
                 onPressed: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => SettingsPage(isDev: widget.isDev)));
+                  Navigator.of(context).push(
+                      MaterialPageRoute(builder: (context) => SettingsPage()));
                 },
                 icon: Icon(Icons.settings_outlined),
                 iconSize: 25,
