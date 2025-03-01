@@ -15,7 +15,7 @@ ClipFile is a cross-platform app that enables seamless clipboard synchronization
 
 ## 🛠️ Tech Stack  
 ClipFile is built using Flutter and relies on the following key packages:  
-- **[Appwrite](https://appwrite.io/)** - Backend for clipboard data & file storage.  
+- **[Appwrite](https://appwrite.io/)** - Backend for clipboard data, file storage & Authentication.  
 - **[Google Fonts](https://pub.dev/packages/google_fonts)** - Custom fonts for a better UI experience.  
 - **[Provider](https://pub.dev/packages/provider)** - State management for efficient app performance.  
 - **[Liquid Pull to Refresh](https://pub.dev/packages/liquid_pull_to_refresh)** - A smooth and clean refresh indicator.  
@@ -28,9 +28,13 @@ ClipFile is built using Flutter and relies on the following key packages:
 - **[Super Drag & Drop](https://pub.dev/packages/super_drag_and_drop)** - Enables drag-and-drop support across platforms.  
 
 ## 🏗️ Installation  
-You can use ClipFile with Appwrite's cloud services or self-host it via Docker.  
+You can start using ClipFile instantly by signing in or registering within the app. Just click **Login/Register**, and an account will be created automatically without any additional setup.  
 
-### 📌 Using Appwrite Cloud  
+For developers or those who prefer manual setup, the dev mode is still available.  
+
+### 📌 Developer Mode Setup  
+If you want to set up ClipFile manually, follow these steps:  
+
 1. Register for an account on [Appwrite Cloud](https://cloud.appwrite.io/). The free tier is sufficient for basic usage.  
 2. Create a new project and assign it a preferred name.  
 3. Select an available region to host the project.  
@@ -84,7 +88,7 @@ If installing the app using the `.msix` package, follow these steps to trust the
 
 ## 📖 Usage  
 1. Install ClipFile on all your devices.  
-2. Set up the app as specified above.  
+2. Sign in or register within the app to get started instantly.  
 3. Start copying, pasting, dragging, and sharing files seamlessly!  
 
 ## 🐛 Issues & Feedback  
@@ -92,3 +96,4 @@ Found a bug or have a feature request? Open an issue [here](https://github.com/R
 
 ---  
 💙 Enjoy using ClipFile? Consider giving the repo a ⭐ to support development!  
+
