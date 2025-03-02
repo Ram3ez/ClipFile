@@ -52,6 +52,93 @@ class _SettingsPageState extends State<SettingsPage> {
     super.initState();
   }
 
+  Widget onTopContainer(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+      padding: EdgeInsets.only(left: 8),
+      decoration: BoxDecoration(
+        border: Border.all(),
+        borderRadius: BorderRadius.circular(4),
+      ),
+      height: 48,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Transform.scale(
+            scale: 1.5,
+            child: Checkbox(
+                activeColor: Theme.of(context).secondaryHeaderColor,
+                value: onTop,
+                onChanged: (val) async {
+                  if (val == true) {
+                    await settingsBox.put("onTop", "true");
+                    await WindowManager.instance.setAlwaysOnTop(true);
+                  } else {
+                    await settingsBox.put("onTop", "false");
+                    await WindowManager.instance.setAlwaysOnTop(false);
+                  }
+                  setState(() {
+                    Config.alwaysOnTop = val! ? "true" : "false";
+                    onTop = val;
+                  });
+                }),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 20),
+            child: Text(
+              "Always on Top",
+              style: GoogleFonts.poppins(fontSize: 20),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget setFixedSizeContainer(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.only(top: 8, left: 8, right: 8),
+      padding: EdgeInsets.only(left: 8),
+      decoration: BoxDecoration(
+        border: Border.all(),
+        borderRadius: BorderRadius.circular(4),
+      ),
+      height: 48,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Transform.scale(
+            scale: 1.5,
+            child: Checkbox(
+                activeColor: Theme.of(context).secondaryHeaderColor,
+                value: fixedSize,
+                onChanged: (val) async {
+                  if (val == true) {
+                    await settingsBox.put("fixedSize", "true");
+                    await WindowManager.instance.setSize(const Size(400, 730));
+                    await WindowManager.instance.setResizable(false);
+                  } else {
+                    await settingsBox.put("fixedSize", "false");
+                    await WindowManager.instance.setResizable(true);
+                  }
+                  setState(() {
+                    Config.fixedSize = val! ? "true" : "false";
+                    fixedSize = val;
+                  });
+                }),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 20),
+            child: Text(
+              "Fixed Size",
+              style: GoogleFonts.poppins(fontSize: 20),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   final updater = ShorebirdUpdater();
   @override
   Widget build(BuildContext context) {
@@ -110,6 +197,22 @@ class _SettingsPageState extends State<SettingsPage> {
                       SizedBox(
                         height: 20,
                       ),
+                      Platform.isWindows
+                          ? onTopContainer(context)
+                          : SizedBox.shrink(),
+                      Platform.isWindows
+                          ? SizedBox(
+                              height: 5,
+                            )
+                          : SizedBox.shrink(),
+                      Platform.isWindows
+                          ? setFixedSizeContainer(context)
+                          : SizedBox.shrink(),
+                      Platform.isWindows
+                          ? SizedBox(
+                              height: 20,
+                            )
+                          : SizedBox.shrink(),
                       updater.isAvailable
                           ? CustomButton(
                               onPress: () async {
@@ -321,109 +424,10 @@ class _SettingsPageState extends State<SettingsPage> {
                           ),
                           !Platform.isWindows
                               ? SizedBox.shrink()
-                              : Container(
-                                  margin: EdgeInsets.symmetric(
-                                      vertical: 8, horizontal: 8),
-                                  padding: EdgeInsets.only(left: 8),
-                                  decoration: BoxDecoration(
-                                    border: Border.all(),
-                                    borderRadius: BorderRadius.circular(4),
-                                  ),
-                                  height: 48,
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      Transform.scale(
-                                        scale: 1.5,
-                                        child: Checkbox(
-                                            activeColor: Theme.of(context)
-                                                .secondaryHeaderColor,
-                                            value: onTop,
-                                            onChanged: (val) async {
-                                              if (val == true) {
-                                                await settingsBox.put(
-                                                    "onTop", "true");
-                                                await WindowManager.instance
-                                                    .setAlwaysOnTop(true);
-                                              } else {
-                                                await settingsBox.put(
-                                                    "onTop", "false");
-                                                await WindowManager.instance
-                                                    .setAlwaysOnTop(false);
-                                              }
-                                              setState(() {
-                                                Config.alwaysOnTop =
-                                                    val! ? "true" : "false";
-                                                onTop = val;
-                                              });
-                                            }),
-                                      ),
-                                      Padding(
-                                        padding:
-                                            const EdgeInsets.only(left: 20),
-                                        child: Text(
-                                          "Always on Top",
-                                          style:
-                                              GoogleFonts.poppins(fontSize: 20),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
+                              : onTopContainer(context),
                           !Platform.isWindows
                               ? SizedBox.shrink()
-                              : Container(
-                                  margin: EdgeInsets.only(
-                                      top: 8, left: 8, right: 8),
-                                  padding: EdgeInsets.only(left: 8),
-                                  decoration: BoxDecoration(
-                                    border: Border.all(),
-                                    borderRadius: BorderRadius.circular(4),
-                                  ),
-                                  height: 48,
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      Transform.scale(
-                                        scale: 1.5,
-                                        child: Checkbox(
-                                            activeColor: Theme.of(context)
-                                                .secondaryHeaderColor,
-                                            value: fixedSize,
-                                            onChanged: (val) async {
-                                              if (val == true) {
-                                                await settingsBox.put(
-                                                    "fixedSize", "true");
-                                                await WindowManager.instance
-                                                    .setSize(
-                                                        const Size(400, 730));
-                                                await WindowManager.instance
-                                                    .setResizable(false);
-                                              } else {
-                                                await settingsBox.put(
-                                                    "fixedSize", "false");
-                                                await WindowManager.instance
-                                                    .setResizable(true);
-                                              }
-                                              setState(() {
-                                                Config.fixedSize =
-                                                    val! ? "true" : "false";
-                                                fixedSize = val;
-                                              });
-                                            }),
-                                      ),
-                                      Padding(
-                                        padding:
-                                            const EdgeInsets.only(left: 20),
-                                        child: Text(
-                                          "Fixed Size",
-                                          style:
-                                              GoogleFonts.poppins(fontSize: 20),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
+                              : setFixedSizeContainer(context),
                           Spacer(),
                           updater.isAvailable
                               ? CustomButton(
@@ -505,6 +509,7 @@ class _SettingsPageState extends State<SettingsPage> {
                           SizedBox(
                             height: 10,
                           ),
+                          updater.isAvailable ? Spacer() : SizedBox.shrink(),
                         ],
                       ),
                     ),
