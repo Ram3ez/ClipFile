@@ -225,7 +225,6 @@ class _SettingsPageState extends State<SettingsPage> {
                                   ScaffoldMessenger.of(context)
                                       .showMaterialBanner(MaterialBanner(
                                           content: Text("Downloading.... "),
-																					backgroundColor: Theme.of(context).primaryColor,
                                           actions: [
                                         Padding(
                                           padding:
@@ -263,7 +262,6 @@ class _SettingsPageState extends State<SettingsPage> {
                                       content: Text(currentPatch != null
                                           ? "Already on latest Patch: ${currentPatch.number}"
                                           : "No Patches found"),
-																			backgroundColor: Theme.of(context).primaryColor,
                                       actions: [
                                         IconButton(
                                             onPressed: () {
@@ -444,7 +442,6 @@ class _SettingsPageState extends State<SettingsPage> {
                                       ScaffoldMessenger.of(context)
                                           .showMaterialBanner(MaterialBanner(
                                               content: Text("Downloading.... "),
-																					backgroundColor: Theme.of(context).primaryColor,
                                               actions: [
                                             Padding(
                                               padding: const EdgeInsets.only(
@@ -483,7 +480,6 @@ class _SettingsPageState extends State<SettingsPage> {
                                           content: Text(currentPatch != null
                                               ? "Already on latest Patch: ${currentPatch.number}"
                                               : "No Patches found"),
-																					backgroundColor: Theme.of(context).primaryColor,
                                           actions: [
                                             IconButton(
                                                 onPressed: () {
