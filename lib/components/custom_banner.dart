@@ -12,6 +12,7 @@ class CustomBanner {
       contentTextStyle: GoogleFonts.poppins(
         color: Colors.black,
       ),
+			backgroundColor: Theme.of(context).primaryColor,
       actions: [
         !Platform.isWindows
             ? TextButton(
