@@ -26,7 +26,7 @@ import 'package:shorebird_code_push/shorebird_code_push.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:universal_io/io.dart';
 import 'package:window_manager/window_manager.dart';
-import 'package:open_file_plus/open_file_plus.dart';
+import 'package:open_filex/open_filex.dart';
 
 void main() async {
   try {
@@ -334,7 +334,7 @@ class _MainAppState extends State<MainApp> {
             ElevatedButton.icon(
               onPressed: () {
                 Navigator.pop(context);
-                OpenFile.open(path);
+                OpenFilex.open(path);
               },
               icon: const Icon(Icons.open_in_new_rounded, size: 18),
               label: Text("Open File",
