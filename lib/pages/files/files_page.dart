@@ -9,10 +9,10 @@ import 'package:provider/provider.dart';
 import 'package:clipfile/config.dart';
 import 'package:clipfile/providers/file_provider.dart';
 
-// ignore: must_be_immutable
+/// The page representing the file storage interface.
 class FilesPage extends StatefulWidget {
-  FilesPage({super.key, this.isDev = false});
-  late bool isDev;
+  final bool isDev;
+  const FilesPage({super.key, this.isDev = false});
 
   @override
   State<FilesPage> createState() => _FilesPageState();
@@ -20,6 +20,8 @@ class FilesPage extends StatefulWidget {
 
 class _FilesPageState extends State<FilesPage> {
   final config = Config();
+
+  // Kept for initial load logic if needed
   late Future? fileList;
 
   @override
@@ -28,6 +30,7 @@ class _FilesPageState extends State<FilesPage> {
     fileList = config.listFiles(context);
   }
 
+  /// Deletes a file and updates the provider.
   Future<void> onDelete(String fileID) async {
     try {
       await config.deleteData(fileID);
@@ -37,30 +40,33 @@ class _FilesPageState extends State<FilesPage> {
       }
     } on AppwriteException catch (e) {
       if (mounted) {
-        showDialog(
-            context: context,
-            barrierDismissible: false,
-            builder: (context) {
-              return AlertDialog(
-                title: Text("Error Deleting File"),
-                content: Text(e.message!),
-                actions: [
-                  MaterialButton(
-                    child: Text("Ok"),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                  )
-                ],
-              );
-            });
+        _showErrorDialog("Error Deleting File", e.message!);
       }
     }
   }
 
+  /// Downloads a file.
   Stream<Uint8List> onDownload(String fileID, String fileName) {
     var file = config.downloadData(fileID);
     return file;
+  }
+
+  void _showErrorDialog(String title, String message) {
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) {
+          return AlertDialog(
+            title: Text(title),
+            content: Text(message),
+            actions: [
+              MaterialButton(
+                child: const Text("Ok"),
+                onPressed: () => Navigator.pop(context),
+              )
+            ],
+          );
+        });
   }
 
   @override
@@ -69,6 +75,7 @@ class _FilesPageState extends State<FilesPage> {
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
+
     return Scaffold(
         backgroundColor: Theme.of(context).primaryColor,
         appBar: AppBar(
@@ -82,30 +89,27 @@ class _FilesPageState extends State<FilesPage> {
             ),
           ),
           actions: [
-            Platform.isWindows
-                ? IconButton(
-                    onPressed: () async {
-                      //var data = await Config().getData(context);
-                      setState(() {
-                        if (mounted) {
-                          final reader = context.read<FileProvider>();
-                          reader.update();
-                        }
-                      });
-                    },
-                    icon: Icon(
-                      Icons.refresh_rounded,
-                      color: Colors.white,
-                    ))
-                : SizedBox.shrink(),
+            if (Platform.isWindows)
+              IconButton(
+                  onPressed: () async {
+                    setState(() {
+                      if (mounted) {
+                        context.read<FileProvider>().update();
+                      }
+                    });
+                  },
+                  icon: const Icon(
+                    Icons.refresh_rounded,
+                    color: Colors.white,
+                  )),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: IconButton(
                 onPressed: () {
-                  Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => SettingsPage()));
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => const SettingsPage()));
                 },
-                icon: Icon(Icons.settings_outlined),
+                icon: const Icon(Icons.settings_outlined),
                 iconSize: 25,
                 color: Colors.white,
               ),

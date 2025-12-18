@@ -9,11 +9,10 @@ import 'package:provider/provider.dart';
 import 'package:clipfile/providers/clip_data_provider.dart';
 import 'package:clipfile/config.dart';
 
-// ignore: must_be_immutable
+/// The main page for displaying and interacting with clipboard content.
 class ClipboardPage extends StatefulWidget {
-  ClipboardPage({super.key, this.isDev = false});
-
-  late bool isDev;
+  final bool isDev;
+  const ClipboardPage({super.key, this.isDev = false});
 
   @override
   State<ClipboardPage> createState() => _ClipboardPageState();
@@ -21,6 +20,8 @@ class ClipboardPage extends StatefulWidget {
 
 class _ClipboardPageState extends State<ClipboardPage> {
   final config = Config();
+
+  // Future kept for initial load, though Provider might handle it.
   late Future<String> clipData;
 
   @override
@@ -35,11 +36,6 @@ class _ClipboardPageState extends State<ClipboardPage> {
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
-    /* WidgetsBinding.instance.addPersistentFrameCallback((_) {
-      ScaffoldMessenger.of(context).showMaterialBanner(MaterialBanner(
-          content: Text("Patch Available"),
-          actions: [IconButton(onPressed: () {}, icon: Icon(Icons.upgrade))]));
-    }); */
 
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
@@ -53,30 +49,23 @@ class _ClipboardPageState extends State<ClipboardPage> {
           ),
         ),
         actions: [
-          !Platform.isWindows
-              ? SizedBox.shrink()
-              : IconButton(
-                  onPressed: () async {
-                    var data = await Config().getData(context);
-                    setState(() {
-                      if (mounted) {
-                        final reader = context.read<ClipDataProvider>();
-                        reader.update(data);
-                      }
-                    });
-                  },
-                  icon: Icon(
-                    Icons.refresh_rounded,
-                    color: Colors.white,
-                  )),
+          if (Platform.isWindows)
+            IconButton(
+              onPressed: _refreshData,
+              icon: const Icon(
+                Icons.refresh_rounded,
+                color: Colors.white,
+              ),
+            ),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: IconButton(
               onPressed: () {
                 Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => SettingsPage()));
+                  MaterialPageRoute(builder: (context) => const SettingsPage()),
+                );
               },
-              icon: Icon(Icons.settings_outlined),
+              icon: const Icon(Icons.settings_outlined),
               iconSize: 25,
               color: Colors.white,
             ),
@@ -85,18 +74,18 @@ class _ClipboardPageState extends State<ClipboardPage> {
         centerTitle: false,
         backgroundColor: Theme.of(context).secondaryHeaderColor,
       ),
-      body: /* Column(
-        children: [
-          SizedBox(
-            height: 20,
-          ), */
-          Consumer<ClipDataProvider>(
+      body: Consumer<ClipDataProvider>(
         builder: (context, state, child) => ClipboardContainer(
           future: state.clipData,
         ),
       ),
-      //],
-      //),
     );
+  }
+
+  Future<void> _refreshData() async {
+    var data = await Config().getData(context);
+    if (mounted) {
+      context.read<ClipDataProvider>().update(data);
+    }
   }
 }

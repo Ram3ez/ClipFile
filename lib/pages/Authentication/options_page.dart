@@ -6,6 +6,8 @@ import "package:flutter/material.dart";
 import "package:hive_flutter/hive_flutter.dart";
 import "package:provider/provider.dart";
 
+/// The initial route wrapper that decides whether to show the MainApp or Login screen
+/// based on authentication status.
 class OptionsPage extends StatefulWidget {
   const OptionsPage({super.key});
 
@@ -14,7 +16,6 @@ class OptionsPage extends StatefulWidget {
 }
 
 class _OptionsPageState extends State<OptionsPage> {
-  bool initial = false;
   final Box<String> settingsBox = Hive.box("settings");
 
   @override
@@ -25,21 +26,24 @@ class _OptionsPageState extends State<OptionsPage> {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Scaffold(
             backgroundColor: Theme.of(context).primaryColor,
-            body: Center(
+            body: const Center(
               child: CircularProgressIndicator(),
             ),
           );
         }
-        if (snapshot.hasData) {
-          settingsBox.put("documentID", "doc_${snapshot.data?.$id}");
-          settingsBox.put("bucketID", "user_${snapshot.data?.$id}");
-          Config.documentID = "doc_${snapshot.data?.$id}";
-          Config.bucketID = "user_${snapshot.data?.$id}";
 
-          return MainApp();
+        // If user is logged in
+        if (snapshot.hasData) {
+          final userId = snapshot.data?.$id;
+          settingsBox.put("documentID", "doc_$userId");
+          settingsBox.put("bucketID", "user_$userId");
+          Config.documentID = "doc_$userId";
+          Config.bucketID = "user_$userId";
+
+          return const MainApp();
         }
 
-        return LoginRegisterPage();
+        return const LoginRegisterPage();
       },
     );
   }

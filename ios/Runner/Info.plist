@@ -60,6 +60,12 @@
 		<string>Upload Images To Sync</string>
 		<key>NSCameraUsageDescription</key>
 		<string>Upload Images from camera To Sync</string>
+    <key>NSBluetoothAlwaysUsageDescription</key>
+    <string>Used for device discovery to sync files</string>
+    <key>NSBluetoothPeripheralUsageDescription</key>
+    <string>Used for device discovery to sync files</string>
+    <key>NSLocalNetworkUsageDescription</key>
+    <string>Used to transfer files directly between devices on the same network</string>
 		<key>UIStatusBarHidden</key>
 		<false/>
 	</dict>

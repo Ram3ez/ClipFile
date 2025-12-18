@@ -9,6 +9,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
 
+/// A page that allows the user to choose between Logging in or entering Developer Mode.
 class LoginRegisterPage extends StatefulWidget {
   const LoginRegisterPage({super.key});
 
@@ -17,40 +18,49 @@ class LoginRegisterPage extends StatefulWidget {
 }
 
 class _LoginRegisterPageState extends State<LoginRegisterPage> {
-  bool login = false;
-  bool devMode = false;
-  bool noOp = true;
+  bool _showLogin = false;
+  bool _devMode = false;
+
   final Box<String> settingsBox = Hive.box("settings");
 
   @override
   Widget build(BuildContext context) {
-    devMode = context.watch<IsdevProvider>().isDev;
+    _devMode = context.watch<IsdevProvider>().isDev;
 
-    if (login) {
-      settingsBox.put("documentID", "");
-      settingsBox.put("bucketID", "");
-      Config.documentID = "";
-      Config.bucketID = "";
-      settingsBox.put("endpoint", Secrets.endpoint);
-      settingsBox.put("projectID", Secrets.projectID);
-      settingsBox.put("databaseID", Secrets.databaseID);
-      settingsBox.put("collectionID", Secrets.collectionID);
-      settingsBox.put("attributeName", Secrets.attributeName);
-      Config.endpoint = Secrets.endpoint;
-      Config.projectID = Secrets.projectID;
-      Config.databaseID = Secrets.databaseID;
-      Config.collectionID = Secrets.collectionID;
-      Config.attributeName = Secrets.attributeName;
-      Config();
+    if (_showLogin) {
+      _initializeLoginConfig();
       return LoginPage();
-    } else if (devMode) {
-      settingsBox.put("isDev", devMode.toString());
-      return MainApp();
-    } else {
-      setState(() {
-        noOp = true;
-      });
+    } else if (_devMode) {
+      settingsBox.put("isDev", _devMode.toString());
+      return const MainApp();
     }
+
+    return _buildSelectionScreen(context);
+  }
+
+  void _initializeLoginConfig() {
+    settingsBox.put("documentID", "");
+    settingsBox.put("bucketID", "");
+
+    Config.documentID = "";
+    Config.bucketID = "";
+
+    settingsBox.put("endpoint", Secrets.endpoint);
+    settingsBox.put("projectID", Secrets.projectID);
+    settingsBox.put("databaseID", Secrets.databaseID);
+    settingsBox.put("collectionID", Secrets.collectionID);
+    settingsBox.put("attributeName", Secrets.attributeName);
+
+    Config.endpoint = Secrets.endpoint;
+    Config.projectID = Secrets.projectID;
+    Config.databaseID = Secrets.databaseID;
+    Config.collectionID = Secrets.collectionID;
+    Config.attributeName = Secrets.attributeName;
+
+    Config(); // Initialize config instance
+  }
+
+  Widget _buildSelectionScreen(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -72,25 +82,21 @@ class _LoginRegisterPageState extends State<LoginRegisterPage> {
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 10.0),
               child: CustomButton(
-                  onPress: () {
-                    setState(() {
-                      noOp = false;
-                      login = true;
-                    });
-                  },
-                  buttonText: "Login",
-                  long: true),
+                onPress: () => setState(() => _showLogin = true),
+                buttonText: "Login",
+                long: true,
+              ),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 10.0),
               child: CustomButton(
-                  onPress: () {
-                    noOp = false;
-                    devMode = true;
-                    context.read<IsdevProvider>().update(true);
-                  },
-                  buttonText: "Developer Mode",
-                  long: true),
+                onPress: () {
+                  _devMode = true;
+                  context.read<IsdevProvider>().update(true);
+                },
+                buttonText: "Developer Mode",
+                long: true,
+              ),
             ),
           ],
         ),

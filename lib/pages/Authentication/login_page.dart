@@ -4,14 +4,15 @@ import "package:clipfile/pages/Authentication/register_page.dart";
 import "package:clipfile/providers/auth_provider.dart";
 import "package:flutter/material.dart";
 import "package:google_fonts/google_fonts.dart";
-import "package:hive_flutter/adapters.dart";
 import "package:provider/provider.dart";
 
+/// The login screen for the application.
 class LoginPage extends StatelessWidget {
   LoginPage({super.key});
+
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passController = TextEditingController();
-  final Box<String> settingsBox = Hive.box("settings");
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,9 +33,7 @@ class LoginPage extends StatelessWidget {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Spacer(
-            flex: 2,
-          ),
+          const Spacer(flex: 2),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
             child: CustomTextField(
@@ -44,9 +43,7 @@ class LoginPage extends StatelessWidget {
               isSetting: false,
             ),
           ),
-          SizedBox(
-            height: 10,
-          ),
+          const SizedBox(height: 10),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
             child: CustomTextField(
@@ -57,48 +54,57 @@ class LoginPage extends StatelessWidget {
               isSetting: false,
             ),
           ),
-          SizedBox(
-            height: 50,
-          ),
+          const SizedBox(height: 50),
           CustomButton(
-              onPress: () async {
-                if (!context.mounted) return;
-                var user = context
-                    .read<AuthProvider>()
-                    .login(emailController.text, passController.text, context);
-                if (!context.mounted) return;
-                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                  content: Text("Logging in. . ."),
-                  behavior: SnackBarBehavior.floating,
-                ));
-                await user;
-                emailController.clear();
-                passController.clear();
-              },
-              buttonText: "Login",
-              long: false),
-          Spacer(),
+            onPress: () => _handleLogin(context),
+            buttonText: "Login",
+            long: false,
+          ),
+          const Spacer(),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text("Dont Have an Account?"),
+              const Text("Dont Have an Account?"),
               GestureDetector(
                 onTap: () {
                   Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => RegisterPage()));
+                    MaterialPageRoute(builder: (context) => RegisterPage()),
+                  );
                 },
                 child: Text(
                   " Register here",
                   style: TextStyle(
-                      color: Theme.of(context).secondaryHeaderColor,
-                      fontWeight: FontWeight.bold),
+                    color: Theme.of(context).secondaryHeaderColor,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               )
             ],
           ),
-          Spacer(),
+          const Spacer(),
         ],
       ),
     );
+  }
+
+  Future<void> _handleLogin(BuildContext context) async {
+    if (!context.mounted) return;
+
+    // Start login process
+    var loginFuture = context
+        .read<AuthProvider>()
+        .login(emailController.text, passController.text, context);
+
+    if (!context.mounted) return;
+
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+      content: Text("Logging in. . ."),
+      behavior: SnackBarBehavior.floating,
+    ));
+
+    await loginFuture;
+
+    emailController.clear();
+    passController.clear();
   }
 }

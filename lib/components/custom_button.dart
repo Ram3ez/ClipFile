@@ -1,9 +1,9 @@
 import "package:flutter/material.dart";
 import "package:google_fonts/google_fonts.dart";
 
-// ignore: must_be_immutable
+/// A customizable button with an animated opacity effect on press.
 class CustomButton extends StatefulWidget {
-  CustomButton({
+  const CustomButton({
     super.key,
     required this.onPress,
     required this.buttonText,
@@ -12,61 +12,55 @@ class CustomButton extends StatefulWidget {
     this.onLongPress,
   });
 
-  final void Function() onPress;
-  final void Function()? onLongPress;
+  final VoidCallback onPress;
+  final VoidCallback? onLongPress;
   final String buttonText;
   final bool long;
   final bool short;
-  double opacity = 1;
 
   @override
   State<CustomButton> createState() => _CustomButtonState();
 }
 
 class _CustomButtonState extends State<CustomButton> {
+  double _opacity = 1.0;
+
   @override
   Widget build(BuildContext context) {
+    // Calculate width based on flags
+    final double width = widget.long
+        ? MediaQuery.of(context).size.width * 0.9
+        : widget.short
+            ? MediaQuery.of(context).size.width * 0.3
+            : MediaQuery.of(context).size.width * 0.4;
+
+    final double height = widget.short ? 50 : 67;
+
     return GestureDetector(
-      //borderRadius: BorderRadius.circular(25),
       onTap: widget.onPress,
       onLongPress: widget.onLongPress,
-      onTapDown: (details) {
-        setState(() {
-          widget.opacity = 0.4;
-        });
-      },
-      onTapUp: (details) {
-        setState(() {
-          widget.opacity = 1.0;
-        });
-      },
-      onTapCancel: () {
-        setState(() {
-          widget.opacity = 1;
-        });
-      },
+      onTapDown: (_) => setState(() => _opacity = 0.4),
+      onTapUp: (_) => setState(() => _opacity = 1.0),
+      onTapCancel: () => setState(() => _opacity = 1.0),
       child: AnimatedOpacity(
-        duration: Duration(milliseconds: 150),
-        opacity: widget.opacity,
+        duration: const Duration(milliseconds: 150),
+        opacity: _opacity,
         child: Container(
+          width: width,
+          height: height,
           decoration: BoxDecoration(
             color: Theme.of(context).secondaryHeaderColor,
-            borderRadius: widget.short
-                ? BorderRadius.circular(15)
-                : BorderRadius.circular(25),
+            borderRadius: BorderRadius.circular(widget.short ? 15 : 25),
           ),
-          width: widget.long
-              ? MediaQuery.of(context).size.width * 0.9
-              : widget.short
-                  ? MediaQuery.of(context).size.width * 0.3
-                  : MediaQuery.of(context).size.width * 0.4,
-          height: widget.short ? 50 : 67,
           child: Center(
-              child: Text(
-            widget.buttonText,
-            style: GoogleFonts.raleway(
-                color: Colors.white, fontSize: 20, fontWeight: FontWeight.w500),
-          )),
+            child: Text(
+              widget.buttonText,
+              style: GoogleFonts.raleway(
+                  color: Colors.white,
+                  fontSize: 20,
+                  fontWeight: FontWeight.w500),
+            ),
+          ),
         ),
       ),
     );

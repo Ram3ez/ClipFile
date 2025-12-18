@@ -4,8 +4,10 @@
 
 list(APPEND FLUTTER_PLUGIN_LIST
   connectivity_plus
+  desktop_webview_window
   file_selector_windows
   irondash_engine_context
+  permission_handler_windows
   screen_retriever_windows
   super_native_extensions
   url_launcher_windows
