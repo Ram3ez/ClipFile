@@ -66,6 +66,10 @@
     <string>Used for device discovery to sync files</string>
     <key>NSLocalNetworkUsageDescription</key>
     <string>Used to transfer files directly between devices on the same network</string>
+    <key>UIFileSharingEnabled</key>
+    <true/>
+    <key>LSSupportsOpeningDocumentsInPlace</key>
+    <true/>
 		<key>UIStatusBarHidden</key>
 		<false/>
 	</dict>

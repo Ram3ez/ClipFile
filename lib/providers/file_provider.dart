@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:clipfile/config.dart';
 import 'package:clipfile/services/discovery_service.dart';
 import 'package:clipfile/services/transfer_manager.dart';
-import 'package:clipfile/services/transfer_server.dart';
 import 'dart:io';
 
 /// A provider that manages the list of files fetched from Appwrite storage.

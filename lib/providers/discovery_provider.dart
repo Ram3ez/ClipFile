@@ -13,7 +13,7 @@ class DiscoveryProvider extends ChangeNotifier {
   bool get isAdvertising =>
       _service.isAdvertising; // Need to expose getter in service or track here
 
-  List<Map<String, dynamic>> _peers = [];
+  final List<Map<String, dynamic>> _peers = [];
   List<Map<String, dynamic>> get peers => _peers;
 
   final TransferServer _transferServer = TransferServer();
@@ -42,11 +42,9 @@ class DiscoveryProvider extends ChangeNotifier {
     _transferServer.onTransferComplete.listen((data) async {
       if (data['success'] == true) {
         if (data['type'] == 'text') {
-          print('Auto-updating clipboard with: ${data['text']}');
           await Clipboard.setData(ClipboardData(text: data['text']));
           _transferReceivedController.add(data);
         } else {
-          print('File received: ${data['filename']}');
           _transferReceivedController.add(data);
         }
       }

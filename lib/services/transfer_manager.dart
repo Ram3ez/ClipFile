@@ -1,9 +1,7 @@
 import 'dart:io';
-
 import 'package:clipfile/config.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
-import 'package:appwrite/appwrite.dart' hide File;
 
 /// Manages the file transfer logic, selecting the best available channel (LAN or Relay).
 class TransferManager {
@@ -29,16 +27,18 @@ class TransferManager {
 
     // Lane 1: Try Local LAN Transfer if connection info is available
     if (targetIp != null && targetPort != null) {
-      if (kDebugMode)
-        print("Attempting LAN transfer to $targetIp:$targetPort...");
+      if (kDebugMode) {
+        debugPrint("Attempting LAN transfer to $targetIp:$targetPort...");
+      }
       uploadSuccess = await _sendViaLan(file, targetIp, targetPort);
     }
 
     // Lane 2: Fallback to Appwrite Relay
     if (!uploadSuccess) {
-      if (kDebugMode)
-        print(
+      if (kDebugMode) {
+        debugPrint(
             "LAN transfer failed or not available. Switching to Appwrite Relay...");
+      }
       uploadSuccess = await _sendViaRelay(file);
     }
 
@@ -51,9 +51,6 @@ class TransferManager {
       String fileName = file.path.split(Platform.pathSeparator).last;
 
       // Create FormData
-      FormData formData = FormData.fromMap({
-        'file': await MultipartFile.fromFile(file.path, filename: fileName),
-      });
 
       // Simple implementation: Stream the file directly as body or use FormData
       // Our server expects raw stream for one endpoint, but let's stick to standard POST
@@ -73,13 +70,16 @@ class TransferManager {
             contentType: 'application/octet-stream', // Binary stream
           ), onSendProgress: (sent, total) {
         if (kDebugMode && total > 0) {
-          print("LAN Progress: ${(sent / total * 100).toStringAsFixed(1)}%");
+          debugPrint(
+              "LAN Progress: ${(sent / total * 100).toStringAsFixed(1)}%");
         }
       });
 
       return true;
     } catch (e) {
-      print("LAN Transfer Error: $e");
+      if (kDebugMode) {
+        debugPrint("LAN Transfer Error: $e");
+      }
       return false;
     }
   }
@@ -98,7 +98,9 @@ class TransferManager {
 
       return result != null;
     } catch (e) {
-      print("Relay Transfer Error: $e");
+      if (kDebugMode) {
+        debugPrint("Relay Transfer Error: $e");
+      }
       return false;
     }
   }
@@ -116,7 +118,9 @@ class TransferManager {
             data: text, options: Options(contentType: 'text/plain'));
         uploadSuccess = true;
       } catch (e) {
-        print("LAN Text Transfer Error: $e");
+        if (kDebugMode) {
+          debugPrint("LAN Text Transfer Error: $e");
+        }
       }
     }
 
@@ -125,7 +129,9 @@ class TransferManager {
         await Config().updateData(text);
         uploadSuccess = true;
       } catch (e) {
-        print("Relay Text Transfer Error: $e");
+        if (kDebugMode) {
+          debugPrint("Relay Text Transfer Error: $e");
+        }
       }
     }
 

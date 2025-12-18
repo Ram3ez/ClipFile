@@ -43,6 +43,8 @@ class _ClipButtonState extends State<ClipButton> {
     final dataFuture = Config().getData(context);
     final data = await dataFuture;
 
+    if (!mounted) return;
+
     if (context.mounted) {
       final provider = context.read<ClipDataProvider>();
       try {
@@ -51,6 +53,7 @@ class _ClipButtonState extends State<ClipButton> {
 
         // Put data into system clipboard
         await Clipboard.setData(ClipboardData(text: data));
+        if (!mounted) return;
       } on AppwriteException catch (e) {
         if (context.mounted) {
           _showErrorDialog(context, e.message ?? "Unknown error");
@@ -64,6 +67,7 @@ class _ClipButtonState extends State<ClipButton> {
     HapticFeedback.heavyImpact();
 
     final data = await Clipboard.getData(Clipboard.kTextPlain);
+    if (!mounted) return;
     final text = data?.text ?? "";
 
     if (text.isEmpty) return;

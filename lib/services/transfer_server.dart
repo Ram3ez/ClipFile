@@ -1,13 +1,12 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:appwrite/appwrite.dart' hide Response;
 import 'package:flutter/foundation.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf/shelf_io.dart' as shelf_io;
 import 'package:shelf_router/shelf_router.dart';
 import 'package:uuid/uuid.dart';
+import 'package:path_provider/path_provider.dart'; // Added this import
 
 /// A local HTTP server used for high-speed LAN file transfers.
 ///
@@ -34,17 +33,18 @@ class TransferServer {
     final router = Router();
 
     // Define endpoints
-    router.post('/upload', _handleUpload);
-    router.post('/upload-text', _handleTextUpload);
+    router.post('/upload', _handleUpload); // Changed to tear-off
+    router.post('/upload-text', _handleTextUpload); // Changed to tear-off
 
-    final handler = Pipeline().addMiddleware(logRequests()).addHandler(router);
+    final handler =
+        Pipeline().addMiddleware(logRequests()).addHandler(router.call);
 
     // Listen on any available network interface (0.0.0.0)
     _server = await shelf_io.serve(handler, InternetAddress.anyIPv4, 0);
     _portInternal = _server!.port;
 
     if (kDebugMode) {
-      print('TransferServer running on port $_portInternal');
+      debugPrint('TransferServer running on port $_portInternal');
     }
 
     return _portInternal!;
@@ -72,7 +72,7 @@ class TransferServer {
       }
 
       if (saveDir == null) {
-        print("Error: Could not determine save directory");
+        debugPrint("Error: Could not determine save directory");
         return Response.internalServerError(body: "Save directory not found");
       }
 
@@ -86,7 +86,7 @@ class TransferServer {
       final file = File(filePath);
 
       if (kDebugMode) {
-        print('Receiving file: $filename -> $filePath');
+        debugPrint('Receiving file: $filename -> $filePath');
       }
 
       // Efficiently pipe the request stream to the file
@@ -119,7 +119,7 @@ class TransferServer {
           : totalBytesNum / (1024 * 1024);
 
       if (kDebugMode) {
-        print(
+        debugPrint(
             'File saved successfully to: ${file.path} (${(totalBytesNum / 1024).toStringAsFixed(2)} KB, ${speedMBps.toStringAsFixed(2)} MB/s)');
       }
 
@@ -134,8 +134,8 @@ class TransferServer {
 
       return Response.ok('File received successfully');
     } catch (e, stack) {
-      print("Upload failed with error: $e");
-      print("Stack trace: $stack");
+      debugPrint("Upload failed with error: $e");
+      debugPrint("Stack trace: $stack");
       _transferController
           .add({"filename": "unknown", "success": false, "type": "file"});
       return Response.internalServerError(body: "Upload failed: $e");
@@ -147,7 +147,7 @@ class TransferServer {
       final text = await request.readAsString();
 
       if (kDebugMode) {
-        print('Text received: $text');
+        debugPrint('Text received: $text');
       }
 
       // In a real app, we might update the ClipDataProvider via a global key or stream.
@@ -156,7 +156,7 @@ class TransferServer {
 
       return Response.ok('Text received');
     } catch (e) {
-      print("Text upload failed: $e");
+      debugPrint("Text upload failed: $e");
       return Response.internalServerError(body: "Failed to receive text");
     }
   }

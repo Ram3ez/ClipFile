@@ -1,12 +1,12 @@
 import 'package:clipfile/components/custom_button.dart';
 import 'package:clipfile/config.dart';
-import 'package:clipfile/main.dart';
 import 'package:clipfile/pages/Authentication/login_page.dart';
 import 'package:clipfile/providers/isdev_provider.dart';
 import 'package:clipfile/secrets.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:clipfile/providers/local_only_provider.dart';
 import 'package:provider/provider.dart';
 
 /// A page that allows the user to choose between Logging in or entering Developer Mode.
@@ -19,45 +19,48 @@ class LoginRegisterPage extends StatefulWidget {
 
 class _LoginRegisterPageState extends State<LoginRegisterPage> {
   bool _showLogin = false;
-  bool _devMode = false;
 
   final Box<String> settingsBox = Hive.box("settings");
 
   @override
   Widget build(BuildContext context) {
-    _devMode = context.watch<IsdevProvider>().isDev;
-
     if (_showLogin) {
       _initializeLoginConfig();
       return LoginPage();
-    } else if (_devMode) {
-      settingsBox.put("isDev", _devMode.toString());
-      return const MainApp();
     }
 
     return _buildSelectionScreen(context);
   }
 
   void _initializeLoginConfig() {
+    // Only set defaults if they are empty
+    if ((settingsBox.get("endpoint") ?? "").isEmpty) {
+      settingsBox.put("endpoint", Secrets.endpoint);
+      Config.endpoint = Secrets.endpoint;
+    }
+    if ((settingsBox.get("projectID") ?? "").isEmpty) {
+      settingsBox.put("projectID", Secrets.projectID);
+      Config.projectID = Secrets.projectID;
+    }
+    if ((settingsBox.get("databaseID") ?? "").isEmpty) {
+      settingsBox.put("databaseID", Secrets.databaseID);
+      Config.databaseID = Secrets.databaseID;
+    }
+    if ((settingsBox.get("collectionID") ?? "").isEmpty) {
+      settingsBox.put("collectionID", Secrets.collectionID);
+      Config.collectionID = Secrets.collectionID;
+    }
+    if ((settingsBox.get("attributeName") ?? "").isEmpty) {
+      settingsBox.put("attributeName", Secrets.attributeName);
+      Config.attributeName = Secrets.attributeName;
+    }
+
     settingsBox.put("documentID", "");
     settingsBox.put("bucketID", "");
-
     Config.documentID = "";
     Config.bucketID = "";
 
-    settingsBox.put("endpoint", Secrets.endpoint);
-    settingsBox.put("projectID", Secrets.projectID);
-    settingsBox.put("databaseID", Secrets.databaseID);
-    settingsBox.put("collectionID", Secrets.collectionID);
-    settingsBox.put("attributeName", Secrets.attributeName);
-
-    Config.endpoint = Secrets.endpoint;
-    Config.projectID = Secrets.projectID;
-    Config.databaseID = Secrets.databaseID;
-    Config.collectionID = Secrets.collectionID;
-    Config.attributeName = Secrets.attributeName;
-
-    Config(); // Initialize config instance
+    Config().init(); // Initialize config instance
   }
 
   Widget _buildSelectionScreen(BuildContext context) {
@@ -91,7 +94,16 @@ class _LoginRegisterPageState extends State<LoginRegisterPage> {
               padding: const EdgeInsets.symmetric(vertical: 10.0),
               child: CustomButton(
                 onPress: () {
-                  _devMode = true;
+                  context.read<LocalOnlyProvider>().update(true);
+                },
+                buttonText: "Local Only Mode",
+                long: true,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10.0),
+              child: CustomButton(
+                onPress: () {
                   context.read<IsdevProvider>().update(true);
                 },
                 buttonText: "Developer Mode",

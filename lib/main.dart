@@ -19,7 +19,8 @@ import 'package:clipfile/pages/files/files_button_page.dart';
 import 'package:clipfile/pages/files/files_page.dart';
 import 'package:clipfile/pages/discovery_page.dart'; // [NEW]
 import 'package:clipfile/pages/discovery_button_page.dart'; // [NEW]
-import 'package:clipfile/providers/discovery_provider.dart'; // [NEW]
+import 'package:clipfile/providers/discovery_provider.dart';
+import 'package:clipfile/providers/local_only_provider.dart';
 import 'package:quick_actions/quick_actions.dart';
 import 'package:shorebird_code_push/shorebird_code_push.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
@@ -78,6 +79,7 @@ void main() async {
     providers: [
       ChangeNotifierProvider(create: (context) => AuthProvider()),
       ChangeNotifierProvider(create: (context) => IsdevProvider()),
+      ChangeNotifierProvider(create: (context) => LocalOnlyProvider()),
       ChangeNotifierProvider(create: (context) => DiscoveryProvider()),
       ChangeNotifierProvider(
           create: (context) => ClipDataProvider(IsdevProvider().isDev)),
@@ -120,18 +122,28 @@ class _MainAppState extends State<MainApp> {
   static final PageController buttonPageController =
       PageController(initialPage: 0);
 
-  // Syncs the bottom button buttons with the main content view
-  final bottomView = PageView(
-    controller: buttonPageController,
-    onPageChanged: (value) {
-      contentPageController.jumpTo(buttonPageController.offset);
-    },
-    children: const [
+  // children based on mode
+  List<Widget> _getButtonPages(bool isLocal) {
+    if (isLocal) {
+      return const [DiscoveryButtonPage()];
+    }
+    return const [
       ClipButton(),
       FilesButton(),
       DiscoveryButtonPage(),
-    ],
-  );
+    ];
+  }
+
+  List<Widget> _getContentPages(bool isLocal) {
+    if (isLocal) {
+      return [DiscoveryPage(isDev: widget.isDev)];
+    }
+    return [
+      ClipboardPage(isDev: widget.isDev),
+      FilesPage(isDev: widget.isDev),
+      DiscoveryPage(isDev: widget.isDev),
+    ];
+  }
 
   /// Checks for application updates using Shorebird.
   void _checkForUpdates() {
@@ -423,10 +435,13 @@ class _MainAppState extends State<MainApp> {
           buttonPageController.animateToPage(0,
               duration: duration, curve: curve);
         } else if (shortcutType == "action_sec") {
-          contentPageController.animateToPage(1,
-              duration: duration, curve: curve);
-          buttonPageController.animateToPage(1,
-              duration: duration, curve: curve);
+          final isLocal = context.read<LocalOnlyProvider>().isLocal;
+          if (!isLocal) {
+            contentPageController.animateToPage(1,
+                duration: duration, curve: curve);
+            buttonPageController.animateToPage(1,
+                duration: duration, curve: curve);
+          }
         } else if (shortcutType == "action_ter") {
           Navigator.of(context).push(
               MaterialPageRoute(builder: (context) => const SettingsPage()));
@@ -469,11 +484,8 @@ class _MainAppState extends State<MainApp> {
                 onPageChanged: (value) {
                   buttonPageController.jumpTo(contentPageController.offset);
                 },
-                children: [
-                  ClipboardPage(isDev: widget.isDev),
-                  FilesPage(isDev: widget.isDev),
-                  DiscoveryPage(isDev: widget.isDev),
-                ],
+                children: _getContentPages(
+                    context.watch<LocalOnlyProvider>().isLocal),
               )),
 
           // Page Indicator
@@ -487,7 +499,7 @@ class _MainAppState extends State<MainApp> {
             height: MediaQuery.of(context).size.height * 0.05,
             child: SmoothPageIndicator(
               controller: contentPageController,
-              count: 3, // [UPDATED] from 2
+              count: context.watch<LocalOnlyProvider>().isLocal ? 1 : 3,
               onDotClicked: (index) {
                 const duration = Duration(milliseconds: 500);
                 const curve = Curves.easeIn;
@@ -508,7 +520,14 @@ class _MainAppState extends State<MainApp> {
             height: MediaQuery.of(context).size.height * 0.15,
             child: Scaffold(
               backgroundColor: Theme.of(context).primaryColor,
-              body: bottomView,
+              body: PageView(
+                controller: buttonPageController,
+                onPageChanged: (value) {
+                  contentPageController.jumpTo(buttonPageController.offset);
+                },
+                children:
+                    _getButtonPages(context.watch<LocalOnlyProvider>().isLocal),
+              ),
             ),
           ),
         ],

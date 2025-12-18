@@ -10,6 +10,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:shorebird_code_push/shorebird_code_push.dart';
+import 'package:clipfile/providers/local_only_provider.dart';
 import 'package:window_manager/window_manager.dart';
 
 /// The settings page for configuring app preferences and Appwrite connection details.
@@ -27,6 +28,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
   bool onTop = Config.alwaysOnTop == "false" ? false : true;
   bool fixedSize = Config.fixedSize == "true" ? true : false;
+  bool isLocal = Config.isLocal;
   String userName = "";
 
   @override
@@ -156,13 +158,36 @@ class _SettingsPageState extends State<SettingsPage> {
           ),
           const SizedBox(height: 20),
         ],
+        if (userName.isEmpty) ...[
+          const SizedBox(height: 5),
+          _buildCheckboxOption(
+            context,
+            "Local Only Mode",
+            isLocal,
+            (val) async {
+              await context.read<LocalOnlyProvider>().update(val);
+              setState(() {
+                isLocal = val;
+              });
+            },
+          ),
+          const SizedBox(height: 20),
+        ],
         if (updater.isAvailable) ...[
           _buildUpdateButton(context),
           const SizedBox(height: 20),
         ],
         CustomButton(
-          onPress: () async => _handleLogout(context),
-          buttonText: "Log Out",
+          onPress: () async {
+            if (isLocal) {
+              // OptionsPage watches LocalOnlyProvider and will rebuild to show selection screen
+              await context.read<LocalOnlyProvider>().update(false);
+              if (context.mounted) Navigator.of(context).pop();
+            } else {
+              _handleLogout(context);
+            }
+          },
+          buttonText: isLocal ? "Exit Local Only Mode" : "Log Out",
           long: true,
         ),
       ],
@@ -206,6 +231,13 @@ class _SettingsPageState extends State<SettingsPage> {
                   }
                   setState(() => fixedSize = val);
                   Config.fixedSize = val.toString();
+                }),
+              ],
+              if (userName.isEmpty) ...[
+                _buildCheckboxOption(context, "Local Only Mode", isLocal,
+                    (val) async {
+                  await context.read<LocalOnlyProvider>().update(val);
+                  setState(() => isLocal = val);
                 }),
               ],
               const Spacer(),

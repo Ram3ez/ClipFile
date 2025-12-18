@@ -32,11 +32,13 @@ class Config {
   static var alwaysOnTop = settingsBox.get("onTop") ?? "true";
   static var fixedSize = settingsBox.get("fixedSize") ?? "false";
   static var isDev = settingsBox.get("isDev") ?? "false";
+  static var isLocal = settingsBox.get("isLocal") == "true";
 
   // Appwrite Services
   static late Client client;
   static late Realtime realtime;
   static late Databases databases;
+  static late TablesDB tables;
   static late Storage storage;
   static late Account account;
 
@@ -50,12 +52,18 @@ class Config {
   static bool _isInitialized = false;
 
   void init() {
+    if (isLocal) {
+      _isInitialized = true;
+      return;
+    }
+
     if (endpoint.isNotEmpty) {
       Config.client = Client().setEndpoint(endpoint).setProject(projectID);
     } else {
       Config.client = Client();
     }
     Config.databases = Databases(client);
+    Config.tables = TablesDB(client);
     Config.storage = Storage(client);
     Config.account = Account(client);
 
@@ -106,10 +114,8 @@ class Config {
   /// Returns the data as a String, or an empty string if an error occurs.
   Future<String> getData([BuildContext? context, bool isDev = false]) async {
     try {
-      var result = await getDatabase().getDocument(
-          databaseId: databaseID,
-          collectionId: collectionID,
-          documentId: documentID);
+      var result = await tables.getRow(
+          databaseId: databaseID, tableId: collectionID, rowId: documentID);
       return result.data[attributeName] ?? "";
     } on AppwriteException catch (e) {
       if (context != null && context.mounted) {
@@ -124,10 +130,10 @@ class Config {
   /// Returns the updated data.
   Future<String> updateData(String? data) async {
     try {
-      var result = await getDatabase().updateDocument(
-        collectionId: collectionID,
+      var result = await tables.updateRow(
+        tableId: collectionID,
         databaseId: databaseID,
-        documentId: documentID,
+        rowId: documentID,
         data: {attributeName: data ?? ""},
       );
 

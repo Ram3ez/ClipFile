@@ -1,5 +1,7 @@
 import "package:clipfile/config.dart";
 import "package:clipfile/main.dart";
+import "package:clipfile/providers/isdev_provider.dart";
+import "package:clipfile/providers/local_only_provider.dart";
 import "package:clipfile/pages/Authentication/login_register_page.dart";
 import "package:clipfile/providers/auth_provider.dart";
 import "package:flutter/material.dart";
@@ -20,6 +22,13 @@ class _OptionsPageState extends State<OptionsPage> {
 
   @override
   Widget build(BuildContext context) {
+    final isLocal = context.watch<LocalOnlyProvider>().isLocal;
+    final isDev = context.watch<IsdevProvider>().isDev;
+
+    if (isLocal || isDev) {
+      return MainApp(isDev: isDev);
+    }
+
     return FutureBuilder(
       future: context.watch<AuthProvider>().account.get(),
       builder: (context, snapshot) {

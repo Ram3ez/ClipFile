@@ -4,9 +4,8 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:clipfile/providers/discovery_provider.dart';
-import 'package:clipfile/providers/clip_data_provider.dart';
-import 'package:clipfile/providers/file_provider.dart';
 import 'package:clipfile/services/transfer_manager.dart';
+import 'package:clipfile/pages/settings_page.dart';
 import 'dart:io';
 
 class DiscoveryPage extends StatefulWidget {
@@ -44,6 +43,14 @@ class _DiscoveryPageState extends State<DiscoveryPage> {
           ),
         ),
         actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (context) => const SettingsPage()),
+              );
+            },
+            icon: const Icon(Icons.settings_rounded, color: Colors.white),
+          ),
           IconButton(
             onPressed: () {
               discoveryProvider.clearPeers();
@@ -145,7 +152,7 @@ class _DiscoveryPageState extends State<DiscoveryPage> {
           borderRadius: const BorderRadius.vertical(top: Radius.circular(30)),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.5),
+              color: Colors.black.withValues(alpha: 0.5),
               blurRadius: 10,
               spreadRadius: 2,
             )
@@ -185,7 +192,7 @@ class _DiscoveryPageState extends State<DiscoveryPage> {
                     data.text!.isNotEmpty) {
                   _handleSendText(peer, data.text!);
                 } else {
-                  if (mounted) {
+                  if (context.mounted) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(content: Text("Clipboard is empty!")),
                     );
@@ -218,7 +225,7 @@ class _DiscoveryPageState extends State<DiscoveryPage> {
       required VoidCallback onTap}) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.05),
+        color: Colors.white.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(15),
       ),
       child: ListTile(

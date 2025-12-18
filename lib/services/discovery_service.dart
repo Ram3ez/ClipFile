@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
+import 'package:flutter_ble_peripheral/flutter_ble_peripheral.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 /// A service that handles device discovery via Bluetooth Low Energy (BLE).
@@ -12,8 +13,8 @@ import 'package:permission_handler/permission_handler.dart';
 /// running the same service.
 class DiscoveryService {
   // Fixed UUID for the ClipFile service
-  static const String SERVICE_UUID = "12345678-1234-5678-1234-56789abc0001";
-  static const String CHARACTERISTIC_UUID =
+  static const String serviceUuid = "12345678-1234-5678-1234-56789abc0001";
+  static const String characteristicUuid =
       "12345678-1234-5678-1234-56789abc0002";
 
   // final DeviceInfoPlugin _deviceInfo = DeviceInfoPlugin();
@@ -23,6 +24,8 @@ class DiscoveryService {
 
   bool _isAdvertising = false;
   bool get isAdvertising => _isAdvertising;
+
+  final FlutterBlePeripheral _blePeripheral = FlutterBlePeripheral();
 
   // Stream of discovered peers
   final _peerController = StreamController<Map<String, dynamic>>.broadcast();
@@ -54,7 +57,9 @@ class DiscoveryService {
       ].request();
 
       if (statuses.values.any((status) => status.isDenied)) {
-        print("BLE Permissions denied");
+        if (kDebugMode) {
+          print("BLE Permissions denied");
+        }
       }
     } else if (Platform.isIOS) {
       await Permission.bluetooth.request();
@@ -92,20 +97,51 @@ class DiscoveryService {
   RawDatagramSocket? _advertisingSocket;
   RawDatagramSocket? _scanningSocket;
   Timer? _broadcastTimer;
-  static const int DISCOVERY_PORT = 45455;
+  static const int discoveryPort = 45455;
 
   /// Starts advertising this device to others using BLE (placeholder) and UDP broadcast.
   Future<void> startAdvertising({int? port}) async {
     if (_isAdvertising) return;
-    print("Starting Advertising");
+    debugPrint("Starting Advertising");
     _isAdvertising = true;
 
     // Start UDP Broadcast for LAN discovery
     try {
       _startUDPAdvertising(port);
     } catch (e) {
-      print("Error starting UDP advertising: $e");
-      _isAdvertising = false;
+      debugPrint("Error starting UDP advertising: $e");
+    }
+
+    // Start BLE Advertising (Mobile)
+    if (Platform.isAndroid || Platform.isIOS) {
+      try {
+        await _startBLEAdvertising(port);
+      } catch (e) {
+        if (kDebugMode) {
+          debugPrint("Error starting BLE advertising: $e");
+        }
+      }
+    }
+  }
+
+  Future<void> _startBLEAdvertising(int? port) async {
+    if (!await _blePeripheral.isSupported) {
+      debugPrint("BLE Peripheral not supported on this device");
+      return;
+    }
+
+    final advertiseData = AdvertiseData(
+      serviceUuid: serviceUuid,
+      localName: Platform.localHostname,
+      serviceData: utf8.encode(jsonEncode({
+        'p': port, // port
+        'os': Platform.operatingSystem,
+      })),
+    );
+
+    await _blePeripheral.start(advertiseData: advertiseData);
+    if (kDebugMode) {
+      debugPrint("BLE Advertising started");
     }
   }
 
@@ -115,7 +151,14 @@ class DiscoveryService {
     _broadcastTimer = null;
     _advertisingSocket?.close();
     _advertisingSocket = null;
-    print("Stopped Advertising");
+
+    if (Platform.isAndroid || Platform.isIOS) {
+      await _blePeripheral.stop();
+    }
+
+    if (kDebugMode) {
+      debugPrint("Stopped Advertising");
+    }
   }
 
   void _startUDPAdvertising(int? port) async {
@@ -148,10 +191,10 @@ class DiscoveryService {
           if (bindAddress != InternetAddress.anyIPv4) break;
         }
       } catch (e) {
-        print("Error listing interfaces: $e");
+        debugPrint("Error listing interfaces: $e");
       }
 
-      print(
+      debugPrint(
           "Binding UDP Advertiser to ${bindAddress.address}, broadcasting to ${broadcastAddress.address}");
 
       // For advertising, we bind to an ephemeral port
@@ -176,27 +219,28 @@ class DiscoveryService {
         try {
           final data = utf8.encode(packet);
           // Try specific broadcast address first
-          _advertisingSocket?.send(data, broadcastAddress, DISCOVERY_PORT);
+          _advertisingSocket?.send(data, broadcastAddress, discoveryPort);
 
           // Also try global broadcast as fallback if they are different
           if (broadcastAddress.address != "255.255.255.255") {
             _advertisingSocket?.send(
-                data, InternetAddress("255.255.255.255"), DISCOVERY_PORT);
+                data, InternetAddress("255.255.255.255"), discoveryPort);
           }
 
           if (kDebugMode) {
-            print("Broadcasting UDP packet to ${broadcastAddress.address}...");
+            debugPrint(
+                "Broadcasting UDP packet to ${broadcastAddress.address}...");
           }
         } catch (e) {
           if (e is SocketException && e.osError?.errorCode == 13) {
             // Permission denied - common on Android for 255.255.255.255
           } else {
-            print("Error sending UDP packet: $e");
+            debugPrint("Error sending UDP packet: $e");
           }
         }
       });
     } catch (e) {
-      print("Error initiating UDP advertising socket: $e");
+      debugPrint("Error initiating UDP advertising socket: $e");
       _isAdvertising = false;
     }
   }
@@ -210,13 +254,28 @@ class DiscoveryService {
     if (Platform.isAndroid || Platform.isIOS || Platform.isMacOS) {
       try {
         await FlutterBluePlus.startScan(
-          withServices: [Guid(SERVICE_UUID)],
+          withServices: [Guid(serviceUuid)],
           timeout: const Duration(seconds: 15),
         );
 
         FlutterBluePlus.scanResults.listen((results) {
           for (ScanResult r in results) {
-            print("Discovered BLE device: ${r.device.platformName}");
+            final serviceData =
+                r.advertisementData.serviceData[Guid(serviceUuid)];
+            int? advertisedPort;
+            String? advertisedOs;
+
+            if (serviceData != null) {
+              try {
+                final data = jsonDecode(utf8.decode(serviceData));
+                advertisedPort = data['p'];
+                advertisedOs = data['os'];
+              } catch (e) {
+                debugPrint("Error parsing BLE service data: $e");
+              }
+            }
+
+            debugPrint("Discovered BLE device: ${r.device.platformName}");
             _peerController.add({
               'id': r.device.remoteId.toString(),
               'name': r.device.platformName.isNotEmpty
@@ -224,11 +283,13 @@ class DiscoveryService {
                   : "Unknown Device",
               'rssi': r.rssi,
               'type': 'BLE',
+              'port': advertisedPort,
+              'os': advertisedOs,
             });
           }
         });
       } catch (e) {
-        print("Error scanning BLE: $e");
+        debugPrint("Error scanning BLE: $e");
       }
     }
 
@@ -236,17 +297,17 @@ class DiscoveryService {
     try {
       await _startUDPScanning();
     } catch (e) {
-      print("Error scanning UDP: $e");
+      debugPrint("Error scanning UDP: $e");
       _isScanning = false;
     }
   }
 
   Future<void> _startUDPScanning() async {
     try {
-      print("Starting UDP Scan on port $DISCOVERY_PORT");
+      debugPrint("Starting UDP Scan on port $discoveryPort");
       // reuseAddress: true is critical for multiple listeners
       _scanningSocket = await RawDatagramSocket.bind(
-          InternetAddress.anyIPv4, DISCOVERY_PORT,
+          InternetAddress.anyIPv4, discoveryPort,
           reuseAddress: true);
 
       _scanningSocket?.listen((RawSocketEvent event) {
@@ -259,7 +320,7 @@ class DiscoveryService {
               if (data['type'] == 'clipfile_ad') {
                 // Filter out own broadcasts
                 if (data['name'] != Platform.localHostname) {
-                  print(
+                  debugPrint(
                       "Discovered UDP peer: ${data['name']} at ${dg.address.address}");
                   _peerController.add({
                     'id': data['id'],
@@ -277,17 +338,17 @@ class DiscoveryService {
           }
         }
       }, onError: (e) {
-        print("UDP Scanning Error: $e");
+        debugPrint("UDP Scanning Error: $e");
       });
     } catch (e) {
-      print("UDP Bind Error (Scanner): $e");
+      debugPrint("UDP Bind Error (Scanner): $e");
       rethrow;
     }
   }
 
   Future<void> stopScanning() async {
     if (!_isScanning) return;
-    print("Stopping Scanning");
+    debugPrint("Stopping Scanning");
 
     if (Platform.isAndroid || Platform.isIOS || Platform.isMacOS) {
       try {
